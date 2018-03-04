@@ -1,55 +1,21 @@
 import React, { Component } from 'react'
-import HomeTeacher from './HomeTeacher'
-import HomeStudent from './HomeStudent'
 import { StyleSheet, Text, View, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons'
-import TextInput from '../components/TextInput'
 import KeyboardAwareView from '../components/KeyboardAwareView';
 import { SafeAreaView } from 'react-navigation';
 import Header from '../components/Header';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-import ListItme from '../components/ListItem';
+import ListItem from '../components/ListItem';
 import CallButton from '../components/CallButton';
-import * as AddCalendarEvent from 'react-native-add-calendar-event';
+import leftPad from 'left-pad';
+//import * as AddCalendarEvent from 'react-native-add-calendar-event';
 
 const { width, height } = Dimensions.get('window');
-
-// const Home = (props) => {
-//     if(props.navigation.state.params.type === "teacher") {
-//         // Display HomeTeacher
-//         return (
-//             <View style={styles.titleContainer}>
-//                 <KeyboardAwareView>
-//                 <View style={styles.container}>
-//                     <TextInput
-//                         label="Date"
-//                         size={20}
-//                     />
-//                     <TextInput
-//                         label="Time"
-//                         size={20}
-//                     />
-//                     <TextInput
-//                         label="Tutor"
-//                         size={20}
-//                     />
-//                 </View>
-//                 </KeyboardAwareView>
-//             </View>
-//         )
-//     } else {
-//         // Display HomeStudent
-//         return (
-//             <View style={styles.titleContainer}>
-//                 <Title text="Scheduling"/>
-//             </View>
-//         )
-//     }
-// }
 
 class Home extends Component {
     constructor(props) {
         super(props);
+        const now = new Date();
         this.state = {
             items : {
                 '2018-02-16' : [
@@ -110,6 +76,8 @@ class Home extends Component {
             call : false,
             chiseItem : null,
         };
+
+        this.state.items = this.getItems(this.state.items, now.getFullYear(), now.getMonth() + 1)
       }
 
       static calendarEvent = (title) => {
@@ -160,11 +128,24 @@ class Home extends Component {
     pressCall = () => {
         console.log('Press call button');
         this.setState({ call : false, chiseItem : null });
+    }
 
+    getItems = (oldItems, year, month) => {
+        const items = Object.assign({}, oldItems);
+
+        for(let day = 0; day < 31; day++) {
+            const dateString = `${year}-${leftPad(month, 2, 0)}-${leftPad(day, 2, 0)}`;
+            if (!items[dateString]) {
+                items[dateString] = [];
+            }
+        }
+        return items;
     }
     
-    loadItems = ({dateString}) => {
-
+    loadItems = (month) => {
+        this.setState({
+            items : this.getItems(this.state.items, month.year, month.month)
+        });
     }
 
     pressItem = (info) => {
@@ -173,7 +154,7 @@ class Home extends Component {
     }
 
     renderItem = (info) => {
-        return <ListItme onPress={() => this.pressItem(info)} info={info}/>
+        return <ListItem onPress={() => this.pressItem(info)} info={info}/>
     }
     
     renderEmptyDate = () => {

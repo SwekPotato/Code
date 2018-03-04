@@ -41,10 +41,10 @@ class LogIn extends React.Component {
         }
 
         //Save the JSON web token
-        const { token, type } = await response.json()
+        const { token, ageGroup } = await response.json()
         try {
             await AsyncStorage.setItem('@letsunite:jwt', token)
-            await AsyncStorage.setItem('@letsunite:type', type)
+            await AsyncStorage.setItem('@letsunite:ageGroup', ageGroup)
         } catch(err) {
             //TODO Print an error
             console.error(err)
@@ -52,7 +52,7 @@ class LogIn extends React.Component {
         }
 
         const { navigate } = this.props.navigation
-        navigate('Home', { type })
+        navigate('Home', { ageGroup })
     }
 
     render() {

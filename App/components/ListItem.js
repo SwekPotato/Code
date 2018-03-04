@@ -3,7 +3,7 @@ import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types'
 import { fonts, color } from '../setting';
 import Icon from 'react-native-vector-icons/Ionicons';
-const ListItme = ({info, onPress, isDelete, onDelete}) => {
+const ListItem = ({info, onPress, isDelete, onDelete}) => {
     return(
         <TouchableOpacity style={styles.container} onPress={onPress}>
             <View style={styles.innterContainer}>
@@ -32,12 +32,12 @@ const ListItme = ({info, onPress, isDelete, onDelete}) => {
     );
 };
 
-ListItme.defaultProps = {
+ListItem.defaultProps = {
     isDelete : true, //삭제 가능한 아이템의 경우 true 아니면 false
     onDelete : () => console.log('hohohohohho'), //삭제 메소드 호출
 }
 
-ListItme.propTypes = {
+ListItem.propTypes = {
     isDelete : PropTypes.bool,
     onDelete : PropTypes.func,
     info : PropTypes.object,
@@ -98,4 +98,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ListItme;
+export default ListItem;

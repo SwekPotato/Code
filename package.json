@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "base-64": "^0.1.0",
+    "left-pad": "^1.2.0",
     "native-base": "^2.3.6",
     "prop-types": "^15.6.0",
     "react": "16.0.0",

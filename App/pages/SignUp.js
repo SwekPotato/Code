@@ -42,18 +42,15 @@ class SignUp extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            username: '',
+            name: '',
             email: '',
-            type: '',
+            ageGroup: '',
             password: '',
-            confirmPassword: '',
-            timezone: '',
-            answer : null,
+            securityAnswer : null,
             modal : false,
-            age : null,
-            security : null,
+            securityQuestion : null,
             timezone : null,
-
+            hidePassword: false,
         };
         this.modalDivision = null;
     }
@@ -71,13 +68,7 @@ class SignUp extends React.Component {
 
     handleSignUp = async () => {
         const user = Object.assign({}, this.state)
-        if (user.password !== user.confirmPassword) {
-            // Display error
-            return
-        }
         user.password = base64.encode(user.password)
-        delete user.confirmPassword
-        user.type = user.type.toLowerCase()
 
         const response = await apiClient('user', {
             method: "POST",
@@ -98,15 +89,14 @@ class SignUp extends React.Component {
 
     modalClose = (item) => {
         if(item != 'none'){
-            if(this.modalDivision == 'security'){
-                this.setState({ security : item });
-            }else if( this.modalDivision == 'age' ){
-                this.setState({ age : item });
+            if(this.modalDivision == 'securityQuestion'){
+                this.setState({ securityQuestion : item });
+            }else if( this.modalDivision == 'ageGroup' ){
+                this.setState({ ageGroup : item });
             }else if( this.modalDivision == 'timezone'){
                 this.setState({ timezone : item });
             }
         }
-
         this.setState({ modal : false });
     }
 
@@ -174,32 +164,40 @@ class SignUp extends React.Component {
             </KeyboardAwareView> */}
                 <KeyboardAwareView>
                     <TextInputComp
-                        placeholder='hello@mail.com'
+                        placeholder='bob@mail.com'
                         type='email-address'
                         icon='ios-mail-outline'
                         onChangeText={(text) => this.setState({ email : text})}
                         value={this.state.email}/>
 
                     <TextInputComp
-                        placeholder='password'
+                        placeholder='Password'
                         type='email-address'
                         icon='ios-lock-outline'
                         onChangeText={(text) => this.setState({ password : text})}
                         value={this.state.password}
-                        isSecure={true}/>
+                        isSecure={this.state.hidePassword}
+                        />
+                        <Button 
+                            title={
+                                (this.state.hidePassword ? "Show Password": "Hide Password")} 
+                            onPress={() => {
+                                this.setState({ hidePassword : !this.state.hidePassword })
+                            }}
+                        />
 
                     <TextInputComp
                         placeholder='Name'
                         type='default'
                         icon='ios-person-outline'
-                        onChangeText={(text) => this.setState({ username : text})}
-                        value={this.state.username}/>
+                        onChangeText={(text) => this.setState({ name : text})}
+                        value={this.state.name}/>
 
                     <SelectInput
                         icon='ios-person-add-outline'
                         placeholder='Age group'
-                        onPress={() => this.modalOpen('age')}
-                        value={this.state.age}/>
+                        onPress={() => this.modalOpen('ageGroup')}
+                        value={this.state.ageGroup}/>
 
                     <SelectInput
                         icon='ios-pin-outline'
@@ -210,20 +208,20 @@ class SignUp extends React.Component {
                     <SelectInput
                         icon='ios-help-circle-outline'
                         placeholder='Security question'
-                        onPress={() => this.modalOpen('security')}
-                        value={this.state.security}/>
+                        onPress={() => this.modalOpen('securityQuestion')}
+                        value={this.state.securityQuestion}/>
 
                     <TextInputComp
                         placeholder='Question Answer'
                         type='default'
                         icon='ios-information-circle-outline'
-                        onChangeText={(text) => this.setState({ answer : text})}
-                        value={this.state.answer}/>
+                        onChangeText={(text) => this.setState({ securityAnswer : text})}
+                        value={this.state.securityAnswer}/>
                 </KeyboardAwareView>
 
                 {/* If all the fields are entered, change disable to false로 so the button is enabled. */}
                 {/*<FooterButton disable={true} onPress={() => console.log('sign up press')}/> */}
-                <FooterButton disable={false} onPress={() => console.log('sign up press')}/>
+                <FooterButton disable={false} onPress={this.handleSignUp}/>
                 <OptionModal
                     visible={this.state.modal}
                     division={this.modalDivision}
