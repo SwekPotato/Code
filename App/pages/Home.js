@@ -80,33 +80,13 @@ class Home extends Component {
         this.state.items = this.getItems(this.state.items, now.getFullYear(), now.getMonth() + 1)
       }
 
-      static calendarEvent = (title) => {
-
-        const eventConfig = {
-            title : title
-          };
-
-          AddCalendarEvent.presentNewCalendarEventDialog( eventConfig )
-            .then(eventId => {
-              //handle success (receives event id) or dismissing the modal (receives false)
-              if (eventId) {
-                console.warn(eventId);
-              } else {
-                console.warn('dismissed');
-              }
-            })
-            .catch((error) => {
-              // handle error such as when user rejected permissions
-              console.warn(error);
-            });
-        }
     
       render() {
         return (
             <SafeAreaView style={{width : width, height : height - 50 }}>
                 <Header
                     mode="logo"
-                    onPress={() => Home.calendarEvent('eventTitle')} />
+                    onPress={() => this.addEvent()}/>
                 <Agenda
                     items={this.state.items}
                     loadItemsForMonth={this.loadItems}          
@@ -124,6 +104,11 @@ class Home extends Component {
             </SafeAreaView>
         );
       }
+
+    addEvent = () => {
+        const {navigate} = this.props.navigation;
+        navigate('AddMeeting');
+    }
 
     pressCall = () => {
         console.log('Press call button');
