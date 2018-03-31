@@ -9,6 +9,8 @@ import ListItem from '../components/ListItem';
 import CallButton from '../components/CallButton';
 import leftPad from 'left-pad';
 //import * as AddCalendarEvent from 'react-native-add-calendar-event';
+import moment from 'moment';
+import { apiClient } from '../services/api';
 
 const { width, height } = Dimensions.get('window');
 
@@ -16,72 +18,30 @@ class Home extends Component {
     constructor(props) {
         super(props);
         const now = new Date();
+        //now = moment(new Date(), 'YYYY-MM-DD', 'us').toDate();
+        console.log(now);
         this.state = {
+            email: '',
             items : {
-                '2018-02-16' : [
-                    {
-                        name : 'Richard Chandler',
-                        time : '12:00PM - 12:45PM',
-                        topic : 'Acupuncture\nWith Staff Member #1'
-                    },
-                    {
-                        name : 'Richard Chandler',
-                        time : '12:00PM - 12:45PM',
-                        topic : 'Acupuncture\nWith Staff Member #1'
-                    }
-                ],
-                '2018-02-17' : [
-                    {
-                        name : 'Richard Chandler',
-                        time : '12:00PM - 12:45PM',
-                        topic : 'Acupuncture\nWith Staff Member #1'
-                    },
-                    {
-                        name : 'Richard Chandler',
-                        time : '12:00PM - 12:45PM',
-                        topic : 'Acupuncture\nWith Staff Member #1'
-                    }
-                ],
-                '2018-02-18' : [
-                    {
-                        name : 'Richard Chandler',
-                        time : '12:00PM - 12:45PM',
-                        topic : 'Acupuncture\nWith Staff Member #1'
-                    },
-                ],
-                '2018-02-19' : [],
-                '2018-02-20' : [
-                    {
-                        name : 'Richard Chandler',
-                        time : '12:00PM - 12:45PM',
-                        topic : 'Acupuncture\nWith Staff Member #1'
-                    },
-                    {
-                        name : 'Richard Chandler',
-                        time : '12:00PM - 12:45PM',
-                        topic : 'Acupuncture\nWith Staff Member #1'
-                    },
-                    {
-                        name : 'Richard Chandler',
-                        time : '12:00PM - 12:45PM',
-                        topic : 'Acupuncture\nWith Staff Member #1'
-                    },
-                    {
-                        name : 'Richard Chandler',
-                        time : '12:00PM - 12:45PM',
-                        topic : 'Acupuncture\nWith Staff Member #1'
-                    }
-                ],
+                // '2018-03-26' : [
+                //     {
+                //         name : 'Meeting',
+                //         time : '12:00PM - 12:45PM',
+                //         topic : 'with Grace'
+                //     },
+                // ],
             },
             call : false,
             chiseItem : null,
         };
 
-        this.state.items = this.getItems(this.state.items, now.getFullYear(), now.getMonth() + 1)
-      }
+        this.loadItems(now.getMonth() + 1)
+        if (props.navigation && props.navigation.state && props.navigation.state.params) {
+            this.state.email = props.navigation.state.params.email;
+        }
+    }
 
-    
-      render() {
+    render() {
         return (
             <SafeAreaView style={{width : width, height : height - 50 }}>
                 <Header
@@ -92,6 +52,7 @@ class Home extends Component {
                     loadItemsForMonth={this.loadItems}          
                     renderItem={this.renderItem}
                     renderEmptyDate={this.renderEmptyDate}
+                    selected={moment(this.now).format('YYYY-MM-DD')}
                     rowHasChanged={this.rowHasChanged.bind(this)}
                 />
                 {
@@ -107,7 +68,7 @@ class Home extends Component {
 
     addEvent = () => {
         const {navigate} = this.props.navigation;
-        navigate('AddMeeting');
+        navigate('AddMeeting', { studentId: this.state.email });    
     }
 
     pressCall = () => {
@@ -126,10 +87,57 @@ class Home extends Component {
         }
         return items;
     }
-    
-    loadItems = (month) => {
+  
+    loadItems = async (month) => {
+        const response = await apiClient('meeting', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+
+        const meetings = await response.json()
+        console.log("Meetings : " , meetings)
+
+        const items = Object.assign({}, this.state.items)
+
+        for(let i = 0; i < meetings.length; i++) {
+            console.log('Meetings : ' , meetings[i])
+            const { appointmentOn, startTime, endTime, teacherId, id } = meetings[i]
+            const teacherResponse = await apiClient(`user/${teacherId}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+            })  //do some error handling
+            console.log("Teacher-response : " , teacherResponse)
+            const teacher = await teacherResponse.json()
+            console.log("Teacher : " , teacher);
+            const start = new Date(startTime)
+            const end = new Date(endTime)
+            const startString = `${start.getHours()}:${start.getMinutes()}`
+            const endString = `${end.getHours()}:${end.getMinutes()}`
+            const existingMeetings = items[appointmentOn] || []
+            const name = `${teacher.name}`
+            const time = startString + '-' + endString
+
+            const newMeeting = 
+                {startTime: startString, 
+                endTime: endString, 
+                time: time,
+                name: name,
+                id: id, 
+                with: teacher.name}
+                console.log("newMeeting")
+                console.log(...existingMeetings)
+            items[appointmentOn] = [...existingMeetings, newMeeting]  
+            console.log("Items")
+        }
+        console.log("Items : " , items)
+
+        console.log('Meetings : ' , meetings)
         this.setState({
-            items : this.getItems(this.state.items, month.year, month.month)
+            items : this.getItems(items, month.year, month.month)
         });
     }
 
@@ -141,7 +149,7 @@ class Home extends Component {
     renderItem = (info) => {
         return <ListItem onPress={() => this.pressItem(info)} info={info}/>
     }
-    
+
     renderEmptyDate = () => {
         return null
     }

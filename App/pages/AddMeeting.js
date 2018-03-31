@@ -9,77 +9,65 @@ import { apiClient } from '../services/api';
 import { SafeAreaView } from 'react-navigation';
 import Header from '../components/Header';
 import TextInputComp from '../components/TextInputComp';
-import FooterButton from '../components/FooterButton';
+import FooterButton from '../components/FooterButtonMeeting';
 import SelectInput from '../components/SelectInput';
-import OptionModal from '../components/OptionModal
+import OptionModal from '../components/OptionModal';
+import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import moment from 'moment';
+
+async function valideUsername(username) {
+    const url = `auth/validate?username=${username}`
+    const response = await apiClient(url, {
+        method: "GET",  
+    })
+    if(!response.ok) {
+        return 'Username already taken'
+    } 
+    return null
+}
 
 class AddMeeting extends React.Component {
     constructor(props) {
         super(props)
+        const now = new Date();
         this.state = {
-            name: '',
-            email: '',
-            ageGroup: '',
-            password: '',
-            securityAnswer : null,
-            modal : false,
-            securityQuestion : null,
-            timezone : null,
-            hidePassword: false,
+            studentId: '',
+            teacherId: 'Jon@gmail.com',
+            appointmentOn: new Date('2018-03-25'),
+            startTime: new Date('2018-03-25 08:00:00'),
+            endTime: new Date('2018-03-25 08:30:00'),
         };
-        this.modalDivision = null;
+        if (props.navigation && props.navigation.state && props.navigation.state.params) {
+            this.state.studentId = props.navigation.state.params.studentId;
+            console.log("AddMeeting studentId:", this.state.studentId);
+        }       
     }
 
-    validatePassword = (text) => {
-        const password = this.state.password
-        if(password !== text) {
-            return "Not the same password"
-        }
-    }
+    handleScheduling = async () => {
+        console.log("email: ", this.state.studentId);
 
-    makeHandler = (name) => (text) => {
-        this.setState({ [name]: text })
-    }
+        console.log("apiClient : " , apiClient);
+        const meeting = Object.assign({}, this.state)
 
-    handleSignUp = async () => {
-        const user = Object.assign({}, this.state)
-        user.password = base64.encode(user.password)
-
-        const response = await apiClient('user', {
+        console.log("Meeting : " , meeting)
+        const response = await apiClient('meeting', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(user),
+            body: JSON.stringify(meeting),
         })
 
         if (!response.ok) {
             // Display error message
+            console.log("Response : " , response)
+            console.log("Scheduling error")
             return
         }
+        console.log("Scheduling done")
 
         const { navigate } = this.props.navigation
-        navigate('LogIn', { email: user.email })
-    }
-
-    modalClose = (item) => {
-        if(item != 'none'){
-            if(this.modalDivision == 'securityQuestion'){
-                this.setState({ securityQuestion : item });
-            }else if( this.modalDivision == 'ageGroup' ){
-                this.setState({ ageGroup : item });
-            }else if( this.modalDivision == 'timezone'){
-                this.setState({ timezone : item });
-            }
-        }
-        this.setState({ modal : false });
-    }
-
-    modalOpen = (division) => {
-        this.modalDivision = division;
-        this.setState({
-            modal : true
-        });
+        navigate('Home', { email: meeting.studentId })
     }
 
     render() {
@@ -88,119 +76,44 @@ class AddMeeting extends React.Component {
         return (
             <SafeAreaView style={styles.container}>
             <Header
-                title='new user'
+                title='Schedule meeting'
                 mode='normal'
                 onPress={() => this.props.navigation.goBack(null)}
                 style={{marginBottom :  50}}/>
-            {/* <KeyboardAwareView>
-                <TextInput
-                    label="Username"
-                    size={20}
-                    value={this.state.username}
-                    onChange={this.makeHandler('username')}
-                    validate={valideUsername}
-                />
-                <TextInput
-                    label="Email"
-                    size={20}
-                    value={this.state.email}
-                    onChange={this.makeHandler('email')}
-                    validate={validateEmail}
-                />
-                <DropdownInput
-                    label="You Are a"
-                    options={["Teacher", "Student"]}
-                    value={this.state.type}
-                    onChange={this.makeHandler('type')}
-                />
-                <DropdownInput
-                    label="Timezone"
-                    options={["GMT-8", "GMT+9"]}
-                    value={this.state.timezone}
-                    onChange={this.makeHandler('timezone')}
-                />
-                <TextInput
-                    label="Password"
-                    size={20}
-                    value={this.state.password}
-                    onChange={this.makeHandler('password')}
-                />
-                <TextInput
-                    label="Confirm Password"
-                    size={20}
-                    value={this.state.confirmPassword}
-                    onChange={this.makeHandler('confirmPassword')}
-                    validate={this.validatePassword}
-                />
-                <View style={styles.buttonContainer}>
-                    <Button text="Cancel" size={26} onPress={() => goBack()} />
-                    <Button text="Sign Up" size={26} onPress={this.handleSignUp} />
-                </View>
-            </KeyboardAwareView> */}
                 <KeyboardAwareView>
                     <TextInputComp
-                        placeholder='bob@mail.com'
+                        placeholder='Buddy'
                         type='email-address'
-                        icon='ios-mail-outline'
-                        onChangeText={(text) => this.setState({ email : text})}
-                        value={this.state.email}/>
-
-                    <TextInputComp
-                        placeholder='Password'
-                        type='email-address'
-                        icon='ios-lock-outline'
-                        onChangeText={(text) => this.setState({ password : text})}
-                        value={this.state.password}
-                        isSecure={this.state.hidePassword}
-                        />
-                        <Button 
-                            title={
-                                (this.state.hidePassword ? "Show Password": "Hide Password")} 
-                            onPress={() => {
-                                this.setState({ hidePassword : !this.state.hidePassword })
-                            }}
-                        />
-
-                    <TextInputComp
-                        placeholder='Name'
-                        type='default'
                         icon='ios-person-outline'
-                        onChangeText={(text) => this.setState({ name : text})}
-                        value={this.state.name}/>
-
-                    <SelectInput
-                        icon='ios-person-add-outline'
-                        placeholder='Age group'
-                        onPress={() => this.modalOpen('ageGroup')}
-                        value={this.state.ageGroup}/>
-
-                    <SelectInput
-                        icon='ios-pin-outline'
-                        placeholder='Time zone'
-                        onPress={() => this.modalOpen('timezone')}
-                        value={this.state.timezone}/>
-
-                    <SelectInput
-                        icon='ios-help-circle-outline'
-                        placeholder='Security question'
-                        onPress={() => this.modalOpen('securityQuestion')}
-                        value={this.state.securityQuestion}/>
+                        onChangeText={(text) => this.setState({ teacherId : text})}
+                        value={this.state.teacherId}/>
 
                     <TextInputComp
-                        placeholder='Question Answer'
+                        placeholder='Date'
                         type='default'
-                        icon='ios-information-circle-outline'
-                        onChangeText={(text) => this.setState({ securityAnswer : text})}
-                        value={this.state.securityAnswer}/>
+                        icon='ios-calendar'
+                        onChangeText={(text) => this.setState({ appointmentOn : text})}
+                        value={moment(this.state.appointmentOn).format('YYYY-MM-DD')}/>
+
+                    <TextInputComp
+                        placeholder='Start time'
+                        type='default'
+                        icon='ios-time'
+                        onChangeText={(text) => this.setState({ startTime : text})}
+                        value={moment(this.state.startTime).format('hh-mm-ss')}/>   
+
+                    <TextInputComp
+                        placeholder='End time'
+                        type='default'
+                        icon='ios-time'
+                        onChangeText={(text) => this.setState({ endTime : text})}
+                        value={moment(this.state.endTime).format('hh-mm-ss')}/>         
                 </KeyboardAwareView>
 
                 {/* If all the fields are entered, change disable to false로 so the button is enabled. */}
                 {/*<FooterButton disable={true} onPress={() => console.log('sign up press')}/> */}
-                <FooterButton disable={false} onPress={this.handleSignUp}/>
-                <OptionModal
-                    visible={this.state.modal}
-                    division={this.modalDivision}
-                    onClose={this.modalClose}/>
+                <FooterButton disable={false} onPress={this.handleScheduling}/>
+               
             </SafeAreaView>
         )
     }
@@ -213,8 +126,8 @@ const styles = StyleSheet.create({
     },
 })
 
-SignUp.navigationOptions = {
+AddMeeting.navigationOptions = {
     gesturesEnabled: false,
 }
 
-export default SignUp;
+export default AddMeeting;

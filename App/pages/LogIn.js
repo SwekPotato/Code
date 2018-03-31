@@ -13,8 +13,8 @@ class LogIn extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: 'Bob@gmail.com',
-            password: 'A',
+            email: 'Jon@gmail.com',
+            password: 'ABC',
         }
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
             this.state.email = props.navigation.state.params.email
@@ -36,7 +36,7 @@ class LogIn extends React.Component {
             body: JSON.stringify(user)
         })
         if (!response.ok) {
-            //TODO Print an error
+            console.log('login failed');
             return
         }
 
@@ -44,15 +44,19 @@ class LogIn extends React.Component {
         const { token, ageGroup } = await response.json()
         try {
             await AsyncStorage.setItem('@letsunite:jwt', token)
+            // THIS IS A PROBLEM
+            console.log("AgeGroup : " + ageGroup)
             await AsyncStorage.setItem('@letsunite:ageGroup', ageGroup)
         } catch(err) {
+            console.log("fail setting")
             //TODO Print an error
             console.error(err)
             return
         }
 
+        console.log("Login user:", user.email);
         const { navigate } = this.props.navigation
-        navigate('Home', { ageGroup })
+        navigate('Home', { email: user.email })
     }
 
     render() {

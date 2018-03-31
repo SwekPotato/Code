@@ -80,8 +80,10 @@ class SignUp extends React.Component {
 
         if (!response.ok) {
             // Display error message
+            console.log("sign up error")
             return
         }
+        console.log("signup done")
 
         const { navigate } = this.props.navigation
         navigate('LogIn', { email: user.email })
@@ -117,51 +119,6 @@ class SignUp extends React.Component {
                 mode='normal'
                 onPress={() => this.props.navigation.goBack(null)}
                 style={{marginBottom :  50}}/>
-            {/* <KeyboardAwareView>
-                <TextInput
-                    label="Username"
-                    size={20}
-                    value={this.state.username}
-                    onChange={this.makeHandler('username')}
-                    validate={valideUsername}
-                />
-                <TextInput
-                    label="Email"
-                    size={20}
-                    value={this.state.email}
-                    onChange={this.makeHandler('email')}
-                    validate={validateEmail}
-                />
-                <DropdownInput
-                    label="You Are a"
-                    options={["Teacher", "Student"]}
-                    value={this.state.type}
-                    onChange={this.makeHandler('type')}
-                />
-                <DropdownInput
-                    label="Timezone"
-                    options={["GMT-8", "GMT+9"]}
-                    value={this.state.timezone}
-                    onChange={this.makeHandler('timezone')}
-                />
-                <TextInput
-                    label="Password"
-                    size={20}
-                    value={this.state.password}
-                    onChange={this.makeHandler('password')}
-                />
-                <TextInput
-                    label="Confirm Password"
-                    size={20}
-                    value={this.state.confirmPassword}
-                    onChange={this.makeHandler('confirmPassword')}
-                    validate={this.validatePassword}
-                />
-                <View style={styles.buttonContainer}>
-                    <Button text="Cancel" size={26} onPress={() => goBack()} />
-                    <Button text="Sign Up" size={26} onPress={this.handleSignUp} />
-                </View>
-            </KeyboardAwareView> */}
                 <KeyboardAwareView>
                     <TextInputComp
                         placeholder='bob@mail.com'

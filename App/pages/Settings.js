@@ -10,7 +10,6 @@ import SelectInput from '../components/SelectInput';
 import OptionModal from '../components/OptionModal';
 import KeyboardAwareView from '../components/KeyboardAwareView';
 
-//저장된 사용자 정보를 각 필드에 맞추어 셋팅하면 됩니다.
 class Settings extends Component {
     constructor(props) {
         super(props);
@@ -26,6 +25,15 @@ class Settings extends Component {
         }
 
         this.modalDivision = null;
+    }
+
+    async componentWillMount() {
+        const response = await apiClient ('user', { method: "GET"})
+        if(!response.ok || response.status === 204) {
+            return
+        } 
+        const {} = await response.json()
+        this.setState({ email : user.email })
     }
 
     modalClose = (item) => {

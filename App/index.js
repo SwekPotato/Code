@@ -11,6 +11,7 @@ import CallPage from './pages/Call';
 import TopicsPage from './pages/Topics';
 import TranscriptPage from './pages/Transcript';
 import ForgotPwd from './pages/ForgotPwd';
+import AddMeetingPage from './pages/AddMeeting';
 
 // const App = StackNavigator({
 //   Main: { screen: MainPage }, 
@@ -88,7 +89,10 @@ const App = StackNavigator({
     navigationOptions: {
       gesturesEnabled: false,
     }
-  }
+  },
+  AddMeeting : {
+    screen: AddMeetingPage
+  } 
 },{
     mode: 'modal',
     headerMode: 'none'

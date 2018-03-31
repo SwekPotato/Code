@@ -10,7 +10,7 @@ const ListItem = ({info, onPress, isDelete, onDelete}) => {
                 <View style={styles.infoContainer}>
                     <Text style={styles.textTime}>{info.time}</Text>
                     <Text style={styles.textName}>{info.name}</Text>
-                    <Text style={styles.textTopic}>{info.topic}</Text>                                
+                    {/* <Text style={styles.textTopic}>{info.topic}</Text>                                 */}
                 </View>
                 <View style={styles.cirle}>
                     <Text style={styles.cirleText}>{info.name.slice(0,2)}</Text>
