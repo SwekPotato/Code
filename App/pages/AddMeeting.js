@@ -15,17 +15,6 @@ import OptionModal from '../components/OptionModal';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import moment from 'moment';
 
-async function valideUsername(username) {
-    const url = `auth/validate?username=${username}`
-    const response = await apiClient(url, {
-        method: "GET",  
-    })
-    if(!response.ok) {
-        return 'Username already taken'
-    } 
-    return null
-}
-
 class AddMeeting extends React.Component {
     constructor(props) {
         super(props)

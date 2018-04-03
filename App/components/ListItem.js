@@ -34,7 +34,7 @@ const ListItem = ({info, onPress, isDelete, onDelete}) => {
 
 ListItem.defaultProps = {
     isDelete : true, //삭제 가능한 아이템의 경우 true 아니면 false
-    onDelete : () => console.log('hohohohohho'), //삭제 메소드 호출
+    onDelete : () => console.log('onDelete'), 
 }
 
 ListItem.propTypes = {

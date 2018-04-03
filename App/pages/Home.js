@@ -8,7 +8,6 @@ import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import ListItem from '../components/ListItem';
 import CallButton from '../components/CallButton';
 import leftPad from 'left-pad';
-//import * as AddCalendarEvent from 'react-native-add-calendar-event';
 import moment from 'moment';
 import { apiClient } from '../services/api';
 
@@ -19,18 +18,10 @@ class Home extends Component {
         super(props);
         const now = new Date();
         //now = moment(new Date(), 'YYYY-MM-DD', 'us').toDate();
-        console.log(now);
+        //console.log(now);
         this.state = {
             email: '',
-            items : {
-                // '2018-03-26' : [
-                //     {
-                //         name : 'Meeting',
-                //         time : '12:00PM - 12:45PM',
-                //         topic : 'with Grace'
-                //     },
-                // ],
-            },
+            items : {},
             call : false,
             chiseItem : null,
         };
@@ -97,22 +88,28 @@ class Home extends Component {
         })
 
         const meetings = await response.json()
-        console.log("Meetings : " , meetings)
+        //console.log("Meetings : " , meetings)
 
         const items = Object.assign({}, this.state.items)
 
         for(let i = 0; i < meetings.length; i++) {
-            console.log('Meetings : ' , meetings[i])
+            //console.log('Meetings : ' , meetings[i])
             const { appointmentOn, startTime, endTime, teacherId, id } = meetings[i]
+            // console.log("TeacherId : ", teacherId)
+            // console.log("Type of TeacherId : ", typeof(teacherId))
             const teacherResponse = await apiClient(`user/${teacherId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-            })  //do some error handling
-            console.log("Teacher-response : " , teacherResponse)
+            })
+            if(!response.ok || response.status === 204) {
+                console.log("Error to get user info : " , response)
+                return
+            } 
+            //console.log("Teacher-response : " , teacherResponse)
             const teacher = await teacherResponse.json()
-            console.log("Teacher : " , teacher);
+            //console.log("Teacher : " , teacher);
             const start = new Date(startTime)
             const end = new Date(endTime)
             const startString = `${start.getHours()}:${start.getMinutes()}`
@@ -128,14 +125,13 @@ class Home extends Component {
                 name: name,
                 id: id, 
                 with: teacher.name}
-                console.log("newMeeting")
-                console.log(...existingMeetings)
+                //console.log("newMeeting")
+                //console.log(...existingMeetings)
             items[appointmentOn] = [...existingMeetings, newMeeting]  
-            console.log("Items")
+            //console.log("Items")
         }
-        console.log("Items : " , items)
-
-        console.log('Meetings : ' , meetings)
+        // console.log("Items : " , items)
+        //console.log('Meetings : ' , meetings)
         this.setState({
             items : this.getItems(items, month.year, month.month)
         });

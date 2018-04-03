@@ -9,39 +9,65 @@ import FooterButton from '../components/FooterButton';
 import SelectInput from '../components/SelectInput';
 import OptionModal from '../components/OptionModal';
 import KeyboardAwareView from '../components/KeyboardAwareView';
+import { apiClient } from '../services/api';
 
 class Settings extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            email: 'Bob@gmail.com',
-            password: 'A',
-            username : 'Jack',
-            age : '18 - 24',
-            timezone : 'US  Pacific Time',
-            security : 'What is your favorite food?',
-            answer : 'Pizza',
+            email: '',
+            password: '',
+            username : '',
+            age : '',
+            timezone : '',
+            security : '',
+            answer : '',
             modal : false
         }
+
+        if (props.navigation && props.navigation.state && props.navigation.state.params) {
+            this.state.email = props.navigation.state.params.email;
+        }
+        this.loadItems()
 
         this.modalDivision = null;
     }
 
-    async componentWillMount() {
-        const response = await apiClient ('user', { method: "GET"})
+    loadItems = async () => {
+        console.log("setting for ", this.state.email)
+        let userId = this.state.email
+        //const userinfo = Object.assign({email: this.state.email})
+        console.log("userId: ", userId)
+        const response = await apiClient(`user/${userId}`, {
+            method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+        })  
+        console.log("success")
+        console.log("Response : ", response)
         if(!response.ok || response.status === 204) {
+            console.log("Error to get user info : " , response)
             return
         } 
-        const {} = await response.json()
-        this.setState({ email : user.email })
+        const user = await response.json()
+        console.log("user : ", user)
+        this.setState(
+            { email : user.email ,
+             password : user.password,
+             username : user.name,
+             ageGroup: user.ageGroup,
+             security : user.securityQuestion,
+             timezone : user.timezone,
+             answer : user.securityAnswer})
     }
 
     modalClose = (item) => {
         if(item != 'none'){
             if(this.modalDivision == 'security'){
                 this.setState({ security : item });
-            }else if( this.modalDivision == 'age' ){
-                this.setState({ age : item });
+            }else if( this.modalDivision == 'ageGroup' ){
+                this.setState({ ageGroup : item });
             }else if( this.modalDivision == 'timezone'){
                 this.setState({ timezone : item });
             }
@@ -90,9 +116,9 @@ class Settings extends Component {
 
                     <SelectInput
                         icon='ios-person-add-outline'
-                        placeholder='Age group'
-                        onPress={() => this.modalOpen('age')}
-                        value={this.state.age}/>
+                        placeholder='ageGroup'
+                        onPress={() => this.modalOpen('ageGroup')}
+                        value={this.state.ageGroup}/>
 
                     <SelectInput
                         icon='ios-pin-outline'

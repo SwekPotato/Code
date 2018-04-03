@@ -44,7 +44,6 @@ class LogIn extends React.Component {
         const { token, ageGroup } = await response.json()
         try {
             await AsyncStorage.setItem('@letsunite:jwt', token)
-            // THIS IS A PROBLEM
             console.log("AgeGroup : " + ageGroup)
             await AsyncStorage.setItem('@letsunite:ageGroup', ageGroup)
         } catch(err) {
