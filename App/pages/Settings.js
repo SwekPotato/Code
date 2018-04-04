@@ -10,6 +10,7 @@ import SelectInput from '../components/SelectInput';
 import OptionModal from '../components/OptionModal';
 import KeyboardAwareView from '../components/KeyboardAwareView';
 import { apiClient } from '../services/api';
+import LargeButton from '../components/LargeButton';
 
 class Settings extends Component {
     constructor(props) {
@@ -20,8 +21,8 @@ class Settings extends Component {
             username : '',
             age : '',
             timezone : '',
-            security : '',
-            answer : '',
+           // security : '',
+           // answer : '',
             modal : false
         }
 
@@ -36,22 +37,19 @@ class Settings extends Component {
     loadItems = async () => {
         console.log("setting for ", this.state.email)
         let userId = this.state.email
-        //const userinfo = Object.assign({email: this.state.email})
-        console.log("userId: ", userId)
         const response = await apiClient(`user/${userId}`, {
             method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
         })  
-        console.log("success")
-        console.log("Response : ", response)
+        // console.log("Response : ", response)
         if(!response.ok || response.status === 204) {
             console.log("Error to get user info : " , response)
             return
         } 
         const user = await response.json()
-        console.log("user : ", user)
+        //console.log("user : ", user)
         this.setState(
             { email : user.email ,
              password : user.password,
@@ -59,7 +57,38 @@ class Settings extends Component {
              ageGroup: user.ageGroup,
              //security : user.securityQuestion,
              timezone : user.timezone,
-             answer : user.securityAnswer})
+             //answer : user.securityAnswer,
+             skypeId : user.skypeId,
+            })
+    }
+
+    handleUpdate = async () => {
+        console.log("handleUpdate");
+        const user = Object.assign({}, this.state)
+        console.log("user:", user)
+        // TODO: need to check whether to encode password or not.
+        //user.password = base64.encode(user.password)
+        let userId = this.state.email
+        console.log("userId:", userId)
+        console.log("Account setting update userId: ", userId)
+
+        const response = await apiClient(`user/${userId}`, {
+            method: "PATCH",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(user),
+        })
+
+        if (!response.ok) {
+            // Display error message
+            console.log("Account setting update error")
+            return
+        }
+        console.log("Account setting update done")
+
+        const { navigate } = this.props.navigation
+        navigate('LogIn', { email: user.email })
     }
 
     modalClose = (item) => {
@@ -82,13 +111,14 @@ class Settings extends Component {
             modal : true
         });
     }
+
     render() {
         return (
             <SafeAreaView style={styles.container}>
                 <Header
                     title='account setting'
                     mode='normal'
-                    icon='ios-checkmark-outline'
+                    //icon='ios-checkmark-outline'
                     onPress={() => this.props.navigation.navigate('Home')}/>
 
                 <KeyboardAwareView>
@@ -125,7 +155,7 @@ class Settings extends Component {
                         placeholder='Time zone'
                         onPress={() => this.modalOpen('timezone')}
                         value={this.state.timezone}/>
-
+{/*}
                     <SelectInput
                         icon='ios-help-circle-outline'
                         placeholder='Security question'
@@ -138,8 +168,17 @@ class Settings extends Component {
                         icon='ios-information-circle-outline'
                         onChangeText={(text) => this.setState({ answer : text})}
                         value={this.state.answer}/>
+        */}                  
+                    <TextInputComp
+                        placeholder='Skype ID'
+                        type='default'
+                        icon='ios-information-circle-outline'
+                        onChangeText={(text) => this.setState({ skypeId : text})}
+                        value={this.state.skypeId}/>     
                 </KeyboardAwareView>
 
+                <LargeButton title='Update' onPress={this.handleUpdate} style={{marginBottom : 20}}/>
+       
                 <OptionModal
                     visible={this.state.modal}
                     division={this.modalDivision}

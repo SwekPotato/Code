@@ -17,16 +17,16 @@ class Home extends Component {
     constructor(props) {
         super(props);
         const now = new Date();
-        //now = moment(new Date(), 'YYYY-MM-DD', 'us').toDate();
-        //console.log(now);
+        console.log("currnent date:" , now);
         this.state = {
             email: '',
             items : {},
             call : false,
             chiseItem : null,
+            date: new Date(),
         };
 
-        this.loadItems(now.getMonth() + 1)
+        //this.loadItems() //now.getMonth() + 1)
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
             this.state.email = props.navigation.state.params.email;
         }
@@ -79,16 +79,26 @@ class Home extends Component {
         return items;
     }
   
-    loadItems = async (month) => {
+    loadItems = async () => {
+        console.log("load meetings")
         const response = await apiClient('meeting', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
         })
-
+        //console.log("meeting response:", response)
+        if (!response.ok || response.status == 204) {
+            this.setState({
+                items : this.getItems(items, this.state.date.getFullYear(),
+                                      this.state.date.getMonth() + 1)
+            });
+            // Display error message
+            console.log("No meetings.")
+            return
+        } 
         const meetings = await response.json()
-        //console.log("Meetings : " , meetings)
+        console.log("Meetings : " , meetings)
 
         const items = Object.assign({}, this.state.items)
 
@@ -130,8 +140,8 @@ class Home extends Component {
             items[appointmentOn] = [...existingMeetings, newMeeting]  
             //console.log("Items")
         }
-        // console.log("Items : " , items)
-        //console.log('Meetings : ' , meetings)
+        console.log("Items : " , items)
+        console.log('Meetings : ' , meetings)
         this.setState({
             items : this.getItems(items, month.year, month.month)
         });

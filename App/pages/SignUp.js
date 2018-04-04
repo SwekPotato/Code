@@ -46,10 +46,11 @@ class SignUp extends React.Component {
             email: '',
             ageGroup: '',
             password: '',
-            securityAnswer : null,
+            //securityAnswer : null,
             modal : false,
-            securityQuestion : null,
+            //securityQuestion : null,
             timezone : null,
+            skypeId : '',
             hidePassword: false,
         };
         this.modalDivision = null;
@@ -161,7 +162,7 @@ class SignUp extends React.Component {
                         placeholder='Time zone'
                         onPress={() => this.modalOpen('timezone')}
                         value={this.state.timezone}/>
-
+{/*
                     <SelectInput
                         icon='ios-help-circle-outline'
                         placeholder='Security question'
@@ -174,6 +175,13 @@ class SignUp extends React.Component {
                         icon='ios-information-circle-outline'
                         onChangeText={(text) => this.setState({ securityAnswer : text})}
                         value={this.state.securityAnswer}/>
+ */}                    
+                    <TextInputComp
+                        placeholder='Skype ID'
+                        type='default'
+                        icon='ios-information-circle-outline'
+                        onChangeText={(text) => this.setState({ skypeId : text})}
+                        value={this.state.skypeId}/>   
                 </KeyboardAwareView>
 
                 {/* If all the fields are entered, change disable to false로 so the button is enabled. */}
