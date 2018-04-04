@@ -57,7 +57,7 @@ class Settings extends Component {
              password : user.password,
              username : user.name,
              ageGroup: user.ageGroup,
-             security : user.securityQuestion,
+             //security : user.securityQuestion,
              timezone : user.timezone,
              answer : user.securityAnswer})
     }
