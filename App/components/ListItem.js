@@ -33,7 +33,7 @@ const ListItem = ({info, onPress, isDelete, onDelete}) => {
 };
 
 ListItem.defaultProps = {
-    isDelete : true, //삭제 가능한 아이템의 경우 true 아니면 false
+    isDelete : true, // If deletable, is true, Otherwise is false.
     onDelete : () => console.log('onDelete'), 
 }
 

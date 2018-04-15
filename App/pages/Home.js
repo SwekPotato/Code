@@ -26,7 +26,7 @@ class Home extends Component {
             date: new Date(),
         };
 
-        //this.loadItems() //now.getMonth() + 1)
+        this.loadItems() //now.getMonth() + 1)
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
             this.state.email = props.navigation.state.params.email;
         }
@@ -40,7 +40,7 @@ class Home extends Component {
                     onPress={() => this.addEvent()}/>
                 <Agenda
                     items={this.state.items}
-                    loadItemsForMonth={this.loadItems}          
+                    //loadItemsForMonth={this.loadItems}          
                     renderItem={this.renderItem}
                     renderEmptyDate={this.renderEmptyDate}
                     selected={moment(this.now).format('YYYY-MM-DD')}
@@ -87,7 +87,6 @@ class Home extends Component {
                 'Content-Type': 'application/json'
             },
         })
-        //console.log("meeting response:", response)
         if (!response.ok || response.status == 204) {
             this.setState({
                 items : this.getItems(items, this.state.date.getFullYear(),
@@ -98,14 +97,11 @@ class Home extends Component {
             return
         } 
         const meetings = await response.json()
-        console.log("Meetings : " , meetings)
-
         const items = Object.assign({}, this.state.items)
 
         for(let i = 0; i < meetings.length; i++) {
             //console.log('Meetings : ' , meetings[i])
             const { appointmentOn, startTime, endTime, teacherId, id } = meetings[i]
-            // console.log("TeacherId : ", teacherId)
             // console.log("Type of TeacherId : ", typeof(teacherId))
             const teacherResponse = await apiClient(`user/${teacherId}`, {
                 method: 'GET',
@@ -154,7 +150,29 @@ class Home extends Component {
     }
 
     renderItem = (info) => {
-        return <ListItem onPress={() => this.pressItem(info)} info={info}/>
+
+        return <ListItem onPress={() => this.pressItem(info)} info={info} onDelete={() => this.pressDelete(info)} /> 
+    }
+
+    pressDelete = async(info) => {
+        //copy meetings you already have, find meetings you need to delete, then delete from object/array
+        //keep referencing this.loaditems
+        console.log("Delete Meeting : " , info)
+        let meetingId = info.id
+        console.log("MeetingID : " , meetingId)        
+        const response = await apiClient(`meeting/${meetingId}`, {
+            method: "DELETE",
+        })
+        if (!response.ok || response.status === 204) {
+            // Display error message
+            console.log("Response : " , response)
+            console.log("DeleteMeeting error")
+            return
+        } 
+ 
+        this.setState({items : {}})
+        this.loadItems()    
+        console.log("Meeting deleted")
     }
 
     renderEmptyDate = () => {

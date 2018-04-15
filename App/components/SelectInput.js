@@ -12,13 +12,14 @@ class SelectInput extends Component {
     }
     render() {
         const {
-            placeholder, icon, value, onPress
+            placeholder, icon, value, onPress, defaulttext
         } = this.props;
         return (
             <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={1}>
                 <View style={[styles.innerContainer, { 
                     borderBottomColor : this.state.isFocus ? color.primary : '#dcdcdc'
                     }]}>
+                    <Text style={styles.text}>{defaulttext}</Text>
                     <Icon name={icon} size={30} color='#9b9b9b'/>
                     <TextInput
                         value={value}
@@ -37,16 +38,15 @@ class SelectInput extends Component {
 };
 
 SelectInput.defaultProps = {
-    icon : 'ios-person-add-outline',
-    placeholder : 'Age group',
-
+   // icon : 'ios-person-add-outline',
+   // placeholder : 'Age group',
 };
 
 const styles = StyleSheet.create({
     container : {
         width : width,
-        paddingLeft : 50,
-        paddingRight : 50,
+        paddingLeft : 25,
+        paddingRight : 25,
         marginTop : 7,
         marginBottom : 7
     },
@@ -63,8 +63,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#9b9b9b",
         marginLeft : 20,
+    },
+    text : {
+        fontSize: 16,
+        color: "#9b9b9b",
     }
-
 })
 
 export default SelectInput;

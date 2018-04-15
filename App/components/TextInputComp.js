@@ -12,13 +12,15 @@ class TextInputComp extends Component {
     }
     render() {
         const {
-            placeholder, type, icon, onChangeText, value, isSecure
+            placeholder, type, icon, onChangeText, value, isSecure,
+            defaulttext
         } = this.props;
         return (
             <View style={styles.container}>
                 <View style={[styles.innerContainer, { 
                     borderBottomColor : this.state.isFocus ? color.primary : '#dcdcdc'
                     }]}>
+                    <Text style={styles.text}>{defaulttext}</Text>
                     <Icon name={icon} size={30} color='#9b9b9b'/>
                     <TextInput
                         value={value}
@@ -39,11 +41,10 @@ class TextInputComp extends Component {
 };
 
 TextInputComp.defaultProps = {
-    icon : 'ios-mail-outline',
+    //icon : 'ios-mail-outline',
     type : 'default',
     placeholder : 'hello@gmail.com',
     isSecure : false
-
 }
 
 TextInputComp.propTypes = {
@@ -56,8 +57,8 @@ TextInputComp.propTypes = {
 const styles = StyleSheet.create({
     container : {
         width : width,
-        paddingLeft : 50,
-        paddingRight : 50,
+        paddingLeft : 25,
+        paddingRight : 25,
         marginTop : 7,
         marginBottom : 7
     },
@@ -76,8 +77,11 @@ const styles = StyleSheet.create({
         marginLeft : 20,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    text : {
+        fontSize: 16,
+        color: "#9b9b9b",
     }
-
 })
 
 export default TextInputComp;

@@ -77,10 +77,12 @@ class LogIn extends React.Component {
                         placeholder='hello@mail.com'
                         type='email-address'
                         icon='ios-mail-outline'
+                        defaulttext=''
                         onChangeText={(text) => this.setState({ email : text})}
                         value={this.state.email}/>
 
                     <TextInputComp
+                        defaulttext=''
                         placeholder='**********'
                         type='email-address'
                         icon='ios-lock-outline'

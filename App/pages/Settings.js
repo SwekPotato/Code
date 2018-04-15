@@ -10,7 +10,7 @@ import SelectInput from '../components/SelectInput';
 import OptionModal from '../components/OptionModal';
 import KeyboardAwareView from '../components/KeyboardAwareView';
 import { apiClient } from '../services/api';
-import LargeButton from '../components/LargeButton';
+import SmallButton from '../components/SmallButton';
 
 class Settings extends Component {
     constructor(props) {
@@ -90,6 +90,14 @@ class Settings extends Component {
         navigate('LogIn', { email: user.email })
     }
 
+    handleCancel = () => {
+        console.log("handleUpdate");
+ 
+        // How to keep the original data.
+        const { navigate } = this.props.navigation
+        navigate('LogIn', { email: user.email })
+    }
+
     modalClose = (item) => {
         if(item != 'none'){
             if(this.modalDivision == 'security'){
@@ -122,35 +130,40 @@ class Settings extends Component {
 
                 <KeyboardAwareView>
                     <TextInputComp
+                        defaulttext='Email:'
                         placeholder='hello@mail.com'
                         type='email-address'
-                        icon='ios-mail-outline'
+                        //icon='ios-mail-outline'
                         onChangeText={(text) => this.setState({ email : text})}
                         value={this.state.email}/>
 
                     <TextInputComp
+                        defaulttext='Name:'
+                        placeholder='Name'
+                        type='default'
+                        //icon='ios-person-outline'
+                        onChangeText={(text) => this.setState({ username : text})}
+                        value={this.state.username}/>
+
+                    <TextInputComp
+                        defaulttext='Password:'
                         placeholder='password'
                         type='email-address'
-                        icon='ios-lock-outline'
+                        // icon='ios-lock-outline'
                         onChangeText={(text) => this.setState({ password : text})}
                         value={this.state.password}
                         isSecure={true}/>
 
-                    <TextInputComp
-                        placeholder='Name'
-                        type='default'
-                        icon='ios-person-outline'
-                        onChangeText={(text) => this.setState({ username : text})}
-                        value={this.state.username}/>
-
                     <SelectInput
-                        icon='ios-person-add-outline'
+                        defaulttext='Age group:'
+                        //icon='ios-person-add-outline'
                         placeholder='ageGroup'
                         onPress={() => this.modalOpen('ageGroup')}
                         value={this.state.ageGroup}/>
 
                     <SelectInput
-                        icon='ios-pin-outline'
+                        defaulttext='Timezone:'
+                        //icon='ios-pin-outline'
                         placeholder='Time zone'
                         onPress={() => this.modalOpen('timezone')}
                         value={this.state.timezone}/>
@@ -171,14 +184,14 @@ class Settings extends Component {
                     <TextInputComp
                         placeholder='Skype ID'
                         type='default'
-                        icon='ios-information-circle-outline'
+                        defaulttext='Skype ID:'
+                        //icon='ios-information-circle-outline'
                         onChangeText={(text) => this.setState({ skypeId : text})}
                         value={this.state.skypeId}/>     
                 </KeyboardAwareView>
 
                 <View> 
-                    <LargeButton title='Cancel' onPress={this.handleUpdate} style={{marginBottom : 20}}/>
-                    <LargeButton title='Update' onPress={this.handleUpdate} style={{marginBottom : 20}}/>
+                    <SmallButton title='Update' onPress={this.handleUpdate} style={{marginBottom : 20}}/>
                 </View>
 
                 <OptionModal
