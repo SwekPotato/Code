@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View, Picker } from 'react-native'
+import { StyleSheet, Text, View, Picker, DatePickerIOS } from 'react-native'
 import TextInput from '../components/TextInput'
 import Button from '../components/Button'
 import base64 from 'base-64'
@@ -13,6 +13,7 @@ import FooterButton from '../components/FooterButtonMeeting';
 import SelectInput from '../components/SelectInput';
 import OptionModal from '../components/OptionModal';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
+import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
 
 class AddMeeting extends React.Component {
@@ -22,9 +23,9 @@ class AddMeeting extends React.Component {
         this.state = {
             studentId: '',
             teacherId: 'Jon@gmail.com',
-            appointmentOn: new Date('2018-03-25'),
-            startTime: new Date('2018-03-25 08:00:00'),
-            endTime: new Date('2018-03-25 08:30:00'),
+            appointmentOn: now,
+            startTime: now,
+            endTime: new Date(now.getTime() + 30 * 60 * 1000),
         };
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
             this.state.studentId = props.navigation.state.params.studentId;
@@ -77,26 +78,31 @@ class AddMeeting extends React.Component {
                         onChangeText={(text) => this.setState({ teacherId : text})}
                         value={this.state.teacherId}/>
 
-                    <TextInputComp
+                    <DatePicker
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
                         placeholder='Date'
-                        type='default'
-                        icon='ios-calendar'
-                        onChangeText={(text) => this.setState({ appointmentOn : text})}
-                        value={moment(this.state.appointmentOn).format('YYYY-MM-DD')}/>
+                        mode='date'
+                        onDateChange={(date) => this.setState({ appointmentOn : date})}
+                        date={moment(this.state.appointmentOn).format('YYYY-MM-DD')}/>
 
-                    <TextInputComp
+                    <DatePicker
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        format="h:mm a"
                         placeholder='Start time'
-                        type='default'
-                        icon='ios-time'
-                        onChangeText={(text) => this.setState({ startTime : text})}
-                        value={moment(this.state.startTime).format('hh-mm-ss')}/>   
+                        mode='time'
+                        onDateChange={(date) => this.setState({ startTime : date})}
+                        date={moment(this.state.startTime).format('h:mm a')}/>   
 
-                    <TextInputComp
+                    <DatePicker
+                        confirmBtnText="Confirm"
+                        cancelBtnText="Cancel"
+                        format="h:mm a"
                         placeholder='End time'
-                        type='default'
-                        icon='ios-time'
-                        onChangeText={(text) => this.setState({ endTime : text})}
-                        value={moment(this.state.endTime).format('hh-mm-ss')}/>         
+                        mode='time'
+                        onDateChange={(date) => this.setState({ endTime : date})}
+                        date={this.state.endTime}/>         
                 </KeyboardAwareView>
 
                 {/* If all the fields are entered, change disable to false로 so the button is enabled. */}

@@ -70,8 +70,7 @@ class Settings extends Component {
         //user.password = base64.encode(user.password)
         let userId = this.state.email
         console.log("userId:", userId)
-        console.log("Account setting update userId: ", userId)
-
+      
         const response = await apiClient(`user/${userId}`, {
             method: "PATCH",
             headers: {
@@ -177,8 +176,11 @@ class Settings extends Component {
                         value={this.state.skypeId}/>     
                 </KeyboardAwareView>
 
-                <LargeButton title='Update' onPress={this.handleUpdate} style={{marginBottom : 20}}/>
-       
+                <View> 
+                    <LargeButton title='Cancel' onPress={this.handleUpdate} style={{marginBottom : 20}}/>
+                    <LargeButton title='Update' onPress={this.handleUpdate} style={{marginBottom : 20}}/>
+                </View>
+
                 <OptionModal
                     visible={this.state.modal}
                     division={this.modalDivision}
@@ -200,6 +202,9 @@ const styles = StyleSheet.create ({
         flex: 1,
         backgroundColor : 'white'
       },
+      buttonContainer: {
+          flex: 1,
+      }
 })
 
 export default Settings;

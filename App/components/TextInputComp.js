@@ -27,6 +27,7 @@ class TextInputComp extends Component {
                         underlineColorAndroid ={'transparent'}
                         placeholder={placeholder}
                         onFocus={() => this.setState({ isFocus : true })}
+                        autoCapitalize = 'none'
                         style={styles.textInput}
                         secureTextEntry={isSecure}
                         onEndEditing={() => this.setState({ isFocus : false })}

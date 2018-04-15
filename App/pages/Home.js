@@ -142,9 +142,9 @@ class Home extends Component {
         }
         console.log("Items : " , items)
         console.log('Meetings : ' , meetings)
-        this.setState({
-            items : this.getItems(items, month.year, month.month)
-        });
+        //this.setState({
+        //    items : this.getItems(items, month.year, month.month)
+        //});
     }
 
     pressItem = (info) => {
