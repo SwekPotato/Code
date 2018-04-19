@@ -72,14 +72,15 @@ const styles = StyleSheet.create({
         flex : 1,
         lineHeight : 30,
         fontFamily: fonts.regular,
-        fontSize: 16,
-        color: "#9b9b9b",
+        fontSize: 19,
+        color: "black", //"#9b9b9b",
         marginLeft : 20,
         alignItems: 'center',
         justifyContent: 'center',
     },
     text : {
-        fontSize: 16,
+        fontSize: 17,
+        fontFamily: fonts.regular,
         color: "#9b9b9b",
     }
 })

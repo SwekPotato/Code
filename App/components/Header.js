@@ -56,7 +56,6 @@ Header.propTypes = {
     rightButton : PropTypes.bool,
 }
 
-
 const styles = StyleSheet.create({
     container : {
         width : width,
@@ -94,6 +93,5 @@ const styles = StyleSheet.create({
         })
     }
 });
-
 
 export default Header;

@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
     title: {
         lineHeight : 22,
         fontFamily: fonts.regular,
-        fontSize: 16,
+        fontSize: 17,
         textAlign: "center",
     }
 })

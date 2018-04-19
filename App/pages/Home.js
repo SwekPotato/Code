@@ -20,6 +20,7 @@ class Home extends Component {
         console.log("currnent date:" , now);
         this.state = {
             email: '',
+            name: '',
             items : {},
             call : false,
             chiseItem : null,
@@ -29,6 +30,7 @@ class Home extends Component {
         this.loadItems() //now.getMonth() + 1)
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
             this.state.email = props.navigation.state.params.email;
+            this.state.name = props.navigation.state.params.name;
         }
     }
 

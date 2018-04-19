@@ -6,40 +6,28 @@ import { color, fonts } from '../setting';
 
 const { width, height } = Dimensions.get('window');
 
-class SelectInput extends Component {
+class ShowInput extends Component {
     state={
         isFocus : false,
     }
     render() {
         const {
-            placeholder, icon, value, onPress, defaulttext
+            name, value
         } = this.props;
         return (
-            <TouchableOpacity style={styles.container} onPress={onPress} activeOpacity={1}>
+            <TouchableOpacity style={styles.container} activeOpacity={1}>
                 <View style={[styles.innerContainer, { 
                     borderBottomColor : this.state.isFocus ? color.primary : '#dcdcdc'
                     }]}>
-                    <Text style={styles.text}>{defaulttext}</Text>
-                    <Icon name={icon} size={30} color='#9b9b9b'/>
-                    <TextInput
-                        value={value}
-                        editable={false}
-                        underlineColorAndroid ={'transparent'}
-                        placeholder={placeholder}
-                        onFocus={() => this.setState({ isFocus : true })}
-                        style={styles.textInput}
-                        onEndEditing={() => this.setState({ isFocus : false })}
-                    />
-                    <Icon name='md-arrow-dropdown' size={30} onPress={onPress}/>
+                    <Text style={styles.text}>{name}</Text>
+                    <Text style={styles.text}>{value}</Text>
                 </View>
             </TouchableOpacity>
             );
         }
 };
 
-SelectInput.defaultProps = {
-   // icon : 'ios-person-add-outline',
-   // placeholder : 'Age group',
+ShowInput.defaultProps = {
 };
 
 const styles = StyleSheet.create({
@@ -71,5 +59,5 @@ const styles = StyleSheet.create({
     }
 })
 
-export default SelectInput;
+export default ShowInput;
 

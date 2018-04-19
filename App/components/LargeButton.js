@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
         height: 22,
         lineHeight : 22,
         fontFamily: fonts.regular,
-        fontSize: 16,
+        fontSize: 18,
         textAlign: "center",
         color: "#ffffff"
     }

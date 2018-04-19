@@ -53,8 +53,7 @@ class History extends Component {
         return (
             <View>
                 <Header title='chat history' mode='normal'  rightButton={false} />
-                <View style={styles.buttonContainer}>
-                
+                <View style={styles.buttonContainer}>               
                 </View>
                 <View style={styles.container}>
                 <FlatList 

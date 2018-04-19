@@ -19,7 +19,7 @@ class Main extends Component {
     return (
       <SafeAreaView style={styles.container}>
         <Title style={{marginBottom : 143}}/>
-        <LargeButton title='Are you a new user?' onPress={this.handleSignUp} style={{marginBottom : 20}}/>
+        <LargeButton title='New user?' onPress={this.handleSignUp} style={{marginBottom : 20}}/>
         <Button title='Existing user?' onPress={this.handleLogIn} />          
       </SafeAreaView>
     )

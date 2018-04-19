@@ -18,6 +18,7 @@
     "react-native-calendars": "^1.17.1",
     "react-native-chooser": "^1.7.0",
     "react-native-datepicker": "^1.7.1",
+    "react-native-elements": "^0.19.1",
     "react-native-keyboard-aware-scroll-view": "^0.4.1",
     "react-native-simple-picker": "^1.4.3",
     "react-native-vector-icons": "^4.4.3",

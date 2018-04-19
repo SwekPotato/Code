@@ -122,7 +122,7 @@ class SignUp extends React.Component {
                 style={{marginBottom :  50}}/>
                 <KeyboardAwareView>
                     <TextInputComp
-                        placeholder='bob@mail.com'
+                        placeholder='Email'
                         type='email-address'
                         icon='ios-mail-outline'
                         onChangeText={(text) => this.setState({ email : text})}
@@ -136,14 +136,14 @@ class SignUp extends React.Component {
                         value={this.state.password}
                         isSecure={this.state.hidePassword}
                         />
-                        <Button 
+                        {/* <Button 
                             title={
                                 (this.state.hidePassword ? "Show Password": "Hide Password")} 
                             onPress={() => {
                                 this.setState({ hidePassword : !this.state.hidePassword })
                             }}
                         />
-
+                        */}
                     <TextInputComp
                         placeholder='Name'
                         type='default'

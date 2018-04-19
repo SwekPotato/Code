@@ -55,7 +55,7 @@ class LogIn extends React.Component {
 
         console.log("Login user:", user.email);
         const { navigate } = this.props.navigation
-        navigate('Home', { email: user.email })
+        navigate('Home', { email: user.email, name: user.name })
     }
 
     render() {
