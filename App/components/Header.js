@@ -7,7 +7,13 @@ import Icon from 'react-native-vector-icons/Ionicons';
 const { width, height } = Dimensions.get('window');
 
 const Header = ({ title, onPress, mode, rightButton, style, icon}) => {
-    if(mode == 'normal'){
+    if(mode == 'home'){
+        return(
+            <View style={[styles.container, style]} >
+                <Text style={styles.title}>{title.toUpperCase()}</Text>
+            </View>
+        )    
+    }else if(mode == 'normal'){
         return(
             <View style={[styles.container, style]} >
                 <Text style={styles.title}>{title.toUpperCase()}</Text>

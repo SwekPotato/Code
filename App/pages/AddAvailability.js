@@ -16,47 +16,51 @@ import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
 
-class AddMeeting extends React.Component {
+class AddAvailability extends React.Component {
     constructor(props) {
         super(props)
         const now = new Date();
         this.state = {
-            studentId: '',
+            email: '',
+            isSenior: false,
             teacherId: '',
+            studentId: '',
             date: now,
             startTime: now,
             endTime: new Date(now.getTime() + 30 * 60 * 1000),
         };
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
-            this.state.studentId = props.navigation.state.params.studentId;
+            this.state.email = props.navigation.state.params.email;
+            this.state.isSenior = props.navigation.state.params.isSenior;
             this.state.teacherId = props.navigation.state.params.teacherId;
-            console.log("AddMeeting: teacherId: " + this.state.teacherId, 
-                ", studentId: " + this.state.studentId);  
-        }       
+            this.state.studentId = props.navigation.state.params.studentId;
+        }
+        console.log("Add Ava: teacehrId: " + this.state.teacherId, ", stid: ", this.state.studentId);        
     }
 
     handleScheduling = async () => {
-        const meeting = Object.assign({}, this.state)
+        const availability = Object.assign({}, this.state)
 
-        console.log("Meeting : " , meeting)
-        const response = await apiClient('meeting', {
+        console.log("Avaliability : " , availability)
+        const response = await apiClient('availability', {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(meeting),
+            body: JSON.stringify(availability),
         })
 
         if (!response.ok) {
             // Display error message
             console.log("Response : " , response)
-            console.log("Scheduling error")
+            console.log("AddAvaliability error")
             return
         }
-        console.log("Scheduling done")
+        console.log("AddAvaliability done")
 
         const { navigate } = this.props.navigation
-        navigate('Home', { email: meeting.studentId })
+        navigate('Availability', { email: this.state.email, isSenior: this.state.isSenior,
+                            teacherId: this.state.teacherId, studentId: this.state.studentId})
     }
 
     render() {
@@ -65,18 +69,11 @@ class AddMeeting extends React.Component {
         return (
             <SafeAreaView style={styles.container}>
             <Header
-                title='Add meeting'
+                title='Add Availability'
                 mode='normal'
                 onPress={() => this.props.navigation.goBack(null)}
                 style={{marginBottom :  50}}/>
                 <KeyboardAwareView>
-                    <TextInputComp
-                        placeholder='Buddy'
-                        type='email-address'
-                        icon='ios-person-outline'
-                        onChangeText={(text) => this.setState({ teacherId : text})}
-                        value={this.state.teacherId}/>
-
                     <DatePicker
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
@@ -120,8 +117,8 @@ const styles = StyleSheet.create({
     },
 })
 
-AddMeeting.navigationOptions = {
+AddAvailability.navigationOptions = {
     gesturesEnabled: false,
 }
 
-export default AddMeeting;
+export default AddAvailability;

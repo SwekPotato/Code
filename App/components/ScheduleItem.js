@@ -3,54 +3,30 @@ import { View, TouchableOpacity, StyleSheet, Text } from 'react-native';
 import PropTypes from 'prop-types'
 import { fonts, color } from '../setting';
 import Icon from 'react-native-vector-icons/Ionicons';
-const ListItem = ({info, onPress, isDelete, onDelete}) => {
+const ScheduleItem = ({info, onPress, onAdd}) => {
     return(
         <TouchableOpacity style={styles.container} onPress={onPress}>
             <View style={styles.innterContainer}>
                 <View style={styles.infoContainer}>
-                    <Text style={styles.textName}>{info.action}</Text>
+                    <Text style={styles.textTime}>{info.time}</Text>
                     <Text style={styles.textName}>{info.name}</Text>
-                    <Text style={styles.textName}>{info.time}</Text>
                     {/* <Text style={styles.textTopic}>{info.topic}</Text>                                 */}
                 </View>
-                <View style={styles.trash}>
-                    <Icon
-                        name='ios-trash-outline'
-                        size={40}
-                        onPress={onDelete}
-                        color={color.primary}/>
+                <View style={styles.cirle}>
+                    <Text style={styles.cirleText}>Add</Text>
                 </View>
-                
             </View>
-                {/*<View style={styles.cirle}>
-                    <Text style={styles.cirleText}>{info.name.slice(0,2)}</Text>
-                </View>
-                
-            </View>
-            {
-                isDelete && (
-                    <View style={styles.icon}>
-                        <Icon
-                            name='ios-trash-outline'
-                            size={30}
-                            onPress={onDelete}
-                            color={color.primary}/>
-                    </View>
-                )
-            }
-        */}
+
         </TouchableOpacity>
     );
 };
 
-ListItem.defaultProps = {
-    isDelete : true, // If deletable, is true, Otherwise is false.
-    onDelete : () => console.log('onDelete'), 
+ScheduleItem.defaultProps = {
+    onAdd : () => console.log('onAdd'), 
 }
 
-ListItem.propTypes = {
-    isDelete : PropTypes.bool,
-    onDelete : PropTypes.func,
+ScheduleItem.propTypes = {
+    onAdd : PropTypes.func,
     info : PropTypes.object,
     onPress : PropTypes.func
 }
@@ -62,8 +38,8 @@ const styles = StyleSheet.create({
         marginTop : 10,
         marginBottom : 10,
         marginRight : 20,
-        paddingTop : 10,
-        paddingRight : 15,
+        paddingTop : 15,
+        paddingRight : 10,
         paddingLeft : 15,
         paddingBottom : 10,
     },
@@ -74,25 +50,17 @@ const styles = StyleSheet.create({
     infoContainer : {
         marginRight : 40
     },
-    trash : {
-         alignItems: 'center',
-         justifyContent: 'center',
-         paddingTop : 10,
-         paddingRight : 15,
-     },
-    circle : {
-       // width: 60,
-       // height: 60,
-       // backgroundColor : color.primary,
-       // borderRadius: 30,
+    cirle : {
+        width: 80,
+        height: 40,
+        backgroundColor : color.primary,
+        borderRadius: 10,
         alignItems: 'center',
         justifyContent: 'center',
-        paddingTop : 10,
-        paddingRight : 15,
     },
     cirleText : {
         fontFamily: fonts.regular,
-        fontSize: 24,
+        fontSize: 18,
         textAlign: "center",
         color: "#ffffff"
     },
@@ -117,4 +85,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default ListItem;
+export default ScheduleItem;

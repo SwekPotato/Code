@@ -89,7 +89,7 @@ class SettingPassword extends React.Component {
                     <View style={{marginBottom :  20}}/>                       
                     <CheckBox right title='Hide password'
                         checked={this.state.hidePassword}
-                        //containerStyle={styles.checkbox}
+                        containerStyle={styles.checkbox}
                         onPress={() => {
                             this.setState({ hidePassword : !this.state.hidePassword })
                         }}      
@@ -108,6 +108,7 @@ const styles = StyleSheet.create({
         backgroundColor : 'white',
     },
     checkbox: {
+        backgroundColor : 'white',
         //lineHeight : 22,
         //fontSize: 19,
         //color: '#4a90e2',

@@ -14,6 +14,9 @@ import ForgotPwd from './pages/ForgotPwd';
 import AddMeetingPage from './pages/AddMeeting';
 import SettingUserInfoPage from './pages/SettingUserInfo';
 import SettingPasswordPage from './pages/SettingPassword';
+import SchedulingPage from './pages/Scheduling';
+import AvailabilityPage from './pages/Availability';
+import AddAvailabilityPage from './pages/AddAvailability';
 
 // const App = StackNavigator({
 //   Main: { screen: MainPage }, 
@@ -39,9 +42,11 @@ import SettingPasswordPage from './pages/SettingPassword';
 
 const HomeTabScreen = TabNavigator({
   Home: {screen: HomePage},
-  Topics: {screen: TopicsPage},
+  //Topics: {screen: TopicsPage},
   // Call: {screen: CallPage},
-  History: {screen: HistoryPage},
+  //History: {screen: HistoryPage},
+  Scheduling: {screen: SchedulingPage},
+  Availability: {screen: AvailabilityPage},
   Settings: {screen: SettingsPage}
 }, {
   tabBarOptions: {
@@ -94,6 +99,9 @@ const App = StackNavigator({
   },
   AddMeeting : {
     screen: AddMeetingPage
+  }, 
+  AddAvailability : {
+    screen: AddAvailabilityPage
   }, 
   SettingUserInfo : {
     screen: SettingUserInfoPage

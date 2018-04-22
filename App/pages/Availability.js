@@ -13,13 +13,12 @@ import { apiClient } from '../services/api';
 
 const { width, height } = Dimensions.get('window');
 
-class Home extends Component {
+class Availability extends Component {
     constructor(props) {
         super(props);
         const now = new Date();
-        console.log("currnent date:" , now);
+        //console.log("currnent date:" , now);
         this.state = {
-            id: '',
             email: '',
             isSenior: false,
             studentId: '',
@@ -30,27 +29,26 @@ class Home extends Component {
             date: new Date(),
         };
 
-        this.loadItems()
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
-            this.state.id = props.navigation.state.params.id;
             this.state.email = props.navigation.state.params.email;
             this.state.isSenior = props.navigation.state.params.isSenior;
             this.state.studentId = props.navigation.state.params.studentId;
             this.state.teacherId = props.navigation.state.params.teacherId;
         }
-        console.log("** Home: email: ", this.state.email, ", teacherId: " + this.state.teacherId, 
-                    ", studentId: " + this.state.studentId);       
+        console.log("** Availability: teacherId: " + this.state.teacherId, 
+        ", studentId: " + this.state.studentId);   
+        
+        this.loadAvailability()
     }
 
     render() {
         return (
             <SafeAreaView style={{width : width, height : height - 50 }}>
                 <Header
-                    title='My meetings'
-                    mode='home'
-                    //icon='ios-add'
-                    //onPress={() => this.addEvent()}
-                    />
+                    title='Add Availability'
+                    mode='normal'
+                    icon='ios-add'
+                    onPress={() => this.addEvent()}/>
                 <Agenda
                     items={this.state.items}
                     //loadItemsForMonth={this.loadItems}          
@@ -72,7 +70,7 @@ class Home extends Component {
 
     addEvent = () => {
         const {navigate} = this.props.navigation;
-        navigate('AddMeeting', { studentId: this.state.studentId,  teacherId: this.state.teacherId });    
+        navigate('AddAvailability', { teacherId: this.state.teacherId, studentId : this.state.studentId});    
     }
 
     pressCall = () => {
@@ -92,72 +90,63 @@ class Home extends Component {
         return items;
     }
   
-    loadItems = async () => {
-        // TODO: Get only my meetings.
-        // Need to get data using either studentId or teacherId.
-        console.log("load meetings")
-        const response = await apiClient('meeting', {
+    loadAvailability = async () => {
+        console.log("load availability")
+
+        const response = await apiClient('availability', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
         })
+        console.log("respons: ", response)
         if (!response.ok || response.status == 204) {
             this.setState({
                 items : this.getItems(items, this.state.date.getFullYear(),
                                       this.state.date.getMonth() + 1)
             });
             // Display error message
-            console.log("No meetings.")
+            console.log("No availability.")
             return
         } 
-        const meetings = await response.json()
+                
+        const availability = await response.json()
         const items = Object.assign({}, this.state.items)
 
-        for(let i = 0; i < meetings.length; i++) {
-            //console.log('Meetings : ' , meetings[i])
-            const { date, startTime, endTime, teacherId, id } = meetings[i]
-            // console.log("Type of TeacherId : ", typeof(teacherId))
-            const teacherResponse = await apiClient(`user/${teacherId}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-            })
-            if(!teacherResponse.ok || teacherResponse.status === 204) {
-                console.log("Error to get user info : " , response)
-                return
-            } 
-            //console.log("Teacher-response : " , teacherResponse)
-            const teacher = await teacherResponse.json()
-            //console.log("Teacher : " , teacher);
+        for(let i = 0; i < availability.length; i++) {
+            //console.log('availability : ' , availability[i])
+            const { date, startTime, endTime, teacherId, studentId, id } = availability[i]
+            //console.log("id: ", id);
+            // Get my availability.
+            if (this.state.isSenior && teacherId != this.state.email) continue;
+            if (!this.state.isSenior && studentId != this.state.email) continue;
+
+            //console.log("add availability");
             const start = new Date(startTime)
             const end = new Date(endTime)
             const startString = `${start.getHours()}:${start.getMinutes()}`
             const endString = `${end.getHours()}:${end.getMinutes()}`
-            const existingMeetings = items[date] || []
-            const name = `${teacher.name}`
-            const time = '(' + startString + '-' + endString + ')'
-
-            const newMeeting = 
-                {startTime: startString, 
-                endTime: endString, 
+            const existingAvailability = items[date] || []
+            const time = startString + '-' + endString
+           
+            const newAvailability = 
+                {
                 time: time,
-                name: name,
-                action: 'Call with',
-                id: id, 
-                with: teacher.name}
-                //console.log("newMeeting")
-                //console.log(...existingMeetings)
-            items[date] = [...existingMeetings, newMeeting]  
-            //console.log("Items")
+                name: '',
+                action: 'Available',
+                }
+                console.log("newAvailability:", newAvailability)
+                console.log(...existingAvailability)
+            items[date] = [...existingAvailability, newAvailability]  
+            
         }
-        //console.log("Items : " , items)
-        //console.log('Meetings : ' , meetings)
+        console.log("Items : " , items)
+        //console.log('availability : ' , availability)
         this.setState({
             items : this.getItems(items, this.state.date.getFullYear(),
                                   this.state.date.getMonth() + 1)
         });
+        console.log("Get Items : " , this.state.items)
     }
 
     pressItem = (info) => {
@@ -166,13 +155,13 @@ class Home extends Component {
     }
 
     renderItem = (info) => {
-       return <ListItem onPress={() => this.pressItem(info)} info={info} onDelete={() => confirm(info)} />       
+       return <ListItem  info={info} onDelete={() => this.pressDelete(info)} />       
     }
 
     confirm = (info) => {
         Alert.alert(
           'Meeting deletion',
-          'Do you want to delete the meeting?',
+          'Do you want to delete this schedule?',
           [
             {text: 'OK', onPress: () => this.pressDelete(info)},
             {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
@@ -184,22 +173,22 @@ class Home extends Component {
     pressDelete = async(info) => {
         //copy meetings you already have, find meetings you need to delete, then delete from object/array
         //keep referencing this.loaditems
-        console.log("Delete Meeting : " , info)
-        let meetingId = info.id
-        //console.log("MeetingID : " , meetingId)        
-        const response = await apiClient(`meeting/${meetingId}`, {
+        console.log("Delete availability : " , info)
+        let availabilityId = info.id
+        console.log("availabilityID : " , availabilityId)        
+        const response = await apiClient(`availability/${availabilityId}`, {
             method: "DELETE",
         })
         if (!response.ok || response.status === 204) {
             // Display error message
             console.log("Response : " , response)
-            console.log("DeleteMeeting error")
+            console.log("DeleteAvailability error")
             return
         } 
  
         this.setState({items : {}})
         this.loadItems()    
-        console.log("Meeting deleted")
+        console.log("Availability deleted")
     }
 
     renderEmptyDate = () => {
@@ -211,14 +200,14 @@ class Home extends Component {
     }
 }
 
-Home.navigationOptions = {
+Availability.navigationOptions = {
     tabBarIcon: ({ tintColor }) => (
-        <Icon name="ios-home-outline" size={30} color={tintColor} />
+        <Icon name="ios-clock-outline" size={30} color={tintColor} />
     ),
-    tabBarLabel : 'Home',
+    tabBarLabel : 'Availability',
 }
 const styles = StyleSheet.create({
 
 });
 
-export default Home;
+export default Availability;

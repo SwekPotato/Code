@@ -5,7 +5,7 @@ import KeyboardAwareView from '../components/KeyboardAwareView';
 import { SafeAreaView } from 'react-navigation';
 import Header from '../components/Header';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
-import ListItem from '../components/ListItem';
+import ScheduleItem from '../components/ScheduleItem';
 import CallButton from '../components/CallButton';
 import leftPad from 'left-pad';
 import moment from 'moment';
@@ -13,11 +13,11 @@ import { apiClient } from '../services/api';
 
 const { width, height } = Dimensions.get('window');
 
-class Home extends Component {
+class Scheduling extends Component {
     constructor(props) {
         super(props);
         const now = new Date();
-        console.log("currnent date:" , now);
+        
         this.state = {
             id: '',
             email: '',
@@ -30,23 +30,23 @@ class Home extends Component {
             date: new Date(),
         };
 
-        this.loadItems()
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
-            this.state.id = props.navigation.state.params.id;
             this.state.email = props.navigation.state.params.email;
             this.state.isSenior = props.navigation.state.params.isSenior;
             this.state.studentId = props.navigation.state.params.studentId;
             this.state.teacherId = props.navigation.state.params.teacherId;
-        }
-        console.log("** Home: email: ", this.state.email, ", teacherId: " + this.state.teacherId, 
-                    ", studentId: " + this.state.studentId);       
+        }    
+        console.log("** Scheduling: teacherId: " + this.state.teacherId, 
+        ", studentId: " + this.state.studentId);  
+
+        this.loadSchedule()
     }
 
     render() {
         return (
             <SafeAreaView style={{width : width, height : height - 50 }}>
                 <Header
-                    title='My meetings'
+                    title='Add My Meetings'
                     mode='home'
                     //icon='ios-add'
                     //onPress={() => this.addEvent()}
@@ -59,25 +59,13 @@ class Home extends Component {
                     selected={moment(this.now).format('YYYY-MM-DD')}
                     rowHasChanged={this.rowHasChanged.bind(this)}
                 />
-                {
-                    this.state.call && 
-                    <CallButton 
-                        onPress={this.pressCall}
-                        name={this.state.chiseItem.name}
-                        time={this.state.chiseItem.time}/>
-                }
             </SafeAreaView>
         );
       }
 
     addEvent = () => {
         const {navigate} = this.props.navigation;
-        navigate('AddMeeting', { studentId: this.state.studentId,  teacherId: this.state.teacherId });    
-    }
-
-    pressCall = () => {
-        console.log('Press call button');
-        this.setState({ call : false, chiseItem : null });
+        navigate('AddMeeting', { studentId: this.state.studentId, teacherId: this.state.teacherId });    
     }
 
     getItems = (oldItems, year, month) => {
@@ -92,11 +80,9 @@ class Home extends Component {
         return items;
     }
   
-    loadItems = async () => {
-        // TODO: Get only my meetings.
-        // Need to get data using either studentId or teacherId.
-        console.log("load meetings")
-        const response = await apiClient('meeting', {
+    loadSchedule = async () => {
+        console.log("load schedule")
+        const response = await apiClient('availability', {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -108,52 +94,68 @@ class Home extends Component {
                                       this.state.date.getMonth() + 1)
             });
             // Display error message
-            console.log("No meetings.")
+            console.log("No schedule.")
             return
         } 
-        const meetings = await response.json()
+        console.log("recieve schedule")
+        const availability = await response.json()
         const items = Object.assign({}, this.state.items)
 
-        for(let i = 0; i < meetings.length; i++) {
-            //console.log('Meetings : ' , meetings[i])
-            const { date, startTime, endTime, teacherId, id } = meetings[i]
+        for(let i = 0; i < availability.length; i++) {
+            //console.log('availability : ' , availability[i])
+            const { date, startTime, endTime, teacherId, studentId, id } = availability[i]
+
+            if (typeof(studentId) == 'undefined' && typeof(teacherId) == 'undefined') continue;
+            if (studentId == "" && teacherId == "") continue;
+
+            // If the user is senior, need student availability.
+            // If the user is not senior, need teacher availability.
+
+            if (isSenior) {
+                if (studentId == null || studentId == "") continue;
+            } else {
+                if (teacherId == null || teacherId == "") continue;
+            }
+
+            const buddyId = isSenior ? stduentId : teacherId;
+            console.log("buddyId:", buddyId)
+
             // console.log("Type of TeacherId : ", typeof(teacherId))
-            const teacherResponse = await apiClient(`user/${teacherId}`, {
+            const buddyResponse = await apiClient(`user/${buddyId}`, {
                 method: 'GET',
                 headers: {
                     'Content-Type': 'application/json'
                 },
             })
-            if(!teacherResponse.ok || teacherResponse.status === 204) {
-                console.log("Error to get user info : " , response)
+            if(!buddyResponse.ok || buddyResponse.status === 204) {
+                console.log("Error to get user info : " , buddyResponse)
                 return
             } 
             //console.log("Teacher-response : " , teacherResponse)
-            const teacher = await teacherResponse.json()
+            const buddy = await buddyResponse.json()
             //console.log("Teacher : " , teacher);
             const start = new Date(startTime)
             const end = new Date(endTime)
             const startString = `${start.getHours()}:${start.getMinutes()}`
             const endString = `${end.getHours()}:${end.getMinutes()}`
             const existingMeetings = items[date] || []
-            const name = `${teacher.name}`
-            const time = '(' + startString + '-' + endString + ')'
+            const name = `${buddy.name}`
+            const time = startString + '-' + endString
 
-            const newMeeting = 
-                {startTime: startString, 
+            const newMeeting = {
+                startTime: startString, 
                 endTime: endString, 
                 time: time,
                 name: name,
-                action: 'Call with',
                 id: id, 
-                with: teacher.name}
+                buddyId: buddyId}
                 //console.log("newMeeting")
                 //console.log(...existingMeetings)
             items[date] = [...existingMeetings, newMeeting]  
             //console.log("Items")
         }
         //console.log("Items : " , items)
-        //console.log('Meetings : ' , meetings)
+        //console.log('Meetings : ' , availability)
         this.setState({
             items : this.getItems(items, this.state.date.getFullYear(),
                                   this.state.date.getMonth() + 1)
@@ -166,40 +168,52 @@ class Home extends Component {
     }
 
     renderItem = (info) => {
-       return <ListItem onPress={() => this.pressItem(info)} info={info} onDelete={() => confirm(info)} />       
+        return <ScheduleItem onPress={() => this.confirm(info)} info={info} /> 
     }
 
     confirm = (info) => {
         Alert.alert(
-          'Meeting deletion',
-          'Do you want to delete the meeting?',
+          '',
+          'Do you want to add this meeting?',
           [
-            {text: 'OK', onPress: () => this.pressDelete(info)},
+            {text: 'OK', onPress: () => this.addMeeting(info)},
             {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           ],
         )
         { cancelable: false }
     }
 
-    pressDelete = async(info) => {
-        //copy meetings you already have, find meetings you need to delete, then delete from object/array
-        //keep referencing this.loaditems
-        console.log("Delete Meeting : " , info)
-        let meetingId = info.id
-        //console.log("MeetingID : " , meetingId)        
-        const response = await apiClient(`meeting/${meetingId}`, {
-            method: "DELETE",
+    addMeeting = async (info) => {
+        const meeting = Object.assign({}, this.state.items)
+        console.log("info:", info)
+        const meeting = 
+        {
+            studentId: this.state.studentId,
+            teacherId: this.state.teacherId,
+            date: info.date,
+            startTime: info.startTime,
+            endTime: info.startTime,
+        }
+
+        console.log("Meeting : " , meeting)
+        const response = await apiClient('meeting', {
+            method: "POST",
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(meeting),
         })
-        if (!response.ok || response.status === 204) {
+
+        if (!response.ok) {
             // Display error message
             console.log("Response : " , response)
-            console.log("DeleteMeeting error")
+            console.log("Scheduling error")
             return
-        } 
- 
-        this.setState({items : {}})
-        this.loadItems()    
-        console.log("Meeting deleted")
+        }
+        console.log("Scheduling done")
+
+        const { navigate } = this.props.navigation
+        navigate('Home', { email: this.state.email })
     }
 
     renderEmptyDate = () => {
@@ -211,14 +225,14 @@ class Home extends Component {
     }
 }
 
-Home.navigationOptions = {
+Scheduling.navigationOptions = {
     tabBarIcon: ({ tintColor }) => (
-        <Icon name="ios-home-outline" size={30} color={tintColor} />
+        <Icon name="ios-calendar-outline" size={30} color={tintColor} />
     ),
-    tabBarLabel : 'Home',
+    tabBarLabel : 'Scheduling',
 }
 const styles = StyleSheet.create({
 
 });
 
-export default Home;
+export default Scheduling;

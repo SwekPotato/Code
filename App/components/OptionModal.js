@@ -8,7 +8,7 @@ import { color, fonts } from '../setting';
 const { width, height } = Dimensions.get('window');
 
 const listGroup = {
-    ageGroup : ['13 - 17','18 - 24','25 - 44','45 - 64', '65 -'],
+    ageGroup : ['less than 55', 'more than 55'],
     securityQuestion : [
         'What is your best friend first name?',
         'What is your favorite food?',

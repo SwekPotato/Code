@@ -39,8 +39,8 @@ class Settings extends Component {
       return (
         <SafeAreaView style={styles.container}>
             <Header
-                title='account setting'
-                mode='normal'
+                title='Settings'
+                mode='home'
                 onPress={() => this.props.navigation.navigate('Home')}
                 style={{marginBottom :  150}}/>
 
@@ -60,7 +60,7 @@ Settings.navigationOptions = {
     tabBarIcon: ({ tintColor }) => (
         <Icon name="ios-settings-outline" size={30} color={tintColor} />
     ),
-    tabBarLabel : 'Account setting',
+    tabBarLabel : 'Settings',
 }
 
 const styles = StyleSheet.create ({

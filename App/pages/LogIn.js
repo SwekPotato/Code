@@ -13,8 +13,9 @@ class LogIn extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: 'Jon@gmail.com',
-            password: 'ABC',
+            email: 'jon@gmail.com',
+            password: 'abc',
+            passowrdMismatch: false
         }
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
             this.state.email = props.navigation.state.params.email
@@ -26,6 +27,7 @@ class LogIn extends React.Component {
     }
 
     handleLogin = async () => {
+        this.setState({ passowrdMismatch : false });
         const user = Object.assign({}, this.state)
         user.password = base64.encode(user.password)
         const response = await apiClient('auth/login', {
@@ -37,6 +39,7 @@ class LogIn extends React.Component {
         })
         if (!response.ok) {
             console.log('login failed');
+            this.setState({ passowrdMismatch : true });
             return
         }
 
@@ -53,15 +56,19 @@ class LogIn extends React.Component {
             return
         }
 
-        console.log("Login user:", user.email);
+        isSenior = (ageGroup == 'more than 55' ? true : false);
+        teacherId = isSenior ? user.email : '';
+        studentId = isSenior ? '' : user.email;
+        console.log("** Login user:", user.email, ":", token);
         const { navigate } = this.props.navigation
-        navigate('Home', { email: user.email, name: user.name })
+        navigate('Home', { email: user.email, isSenior: isSenior, id: token,
+            teacherId: teacherId, studentId: studentId })
     }
 
     render() {
         return (
             <SafeAreaView style={styles.container}>
-                <Header title='login' mode='normal' onPress={() => this.props.navigation.goBack(null)}/>
+                <Header title='Login' mode='normal' onPress={() => this.props.navigation.navigate('Main')}/>
                 {/* <TextInput
                     label="Email"
                     value={this.state.email}
@@ -91,7 +98,10 @@ class LogIn extends React.Component {
                         isSecure={true}/>
                     
                     {/* TODO: Need to show error msg when the id/password do not match. */}
-                    {/*<ErrorMessage/>*/}
+                    {
+                    this.state.passowrdMismatch && 
+                    <ErrorMessage/>
+                    }
                 </View>
                 <LargeButton title='Sign In' onPress={this.handleLogin} style={{marginBottom : 20}}/>
                 <Button
