@@ -10,19 +10,21 @@ const Header = ({ title, onPress, mode, rightButton, style, icon}) => {
     if(mode == 'home'){
         return(
             <View style={[styles.container, style]} >
-                <Text style={styles.title}>{title.toUpperCase()}</Text>
+                {/* <Text style={styles.title}>{title.toUpperCase()}</Text> */}
+                <Text style={styles.title}>{title}</Text>
             </View>
         )    
     }else if(mode == 'normal'){
         return(
             <View style={[styles.container, style]} >
-                <Text style={styles.title}>{title.toUpperCase()}</Text>
+                {/* <Text style={styles.title}>{title.toUpperCase()}</Text> */}
+                <Text style={styles.title}>{title}</Text>
                 {
                     rightButton && (
                         <Icon
                             style={styles.icon}
                             name={icon}
-                            size={50} color='#ffffff'
+                            size={45} color='#ffffff'
                             onPress={onPress} />
                     )
                 }
@@ -70,8 +72,8 @@ const styles = StyleSheet.create({
         justifyContent : 'center',
         ...Platform.select({
             ios: {
-                paddingTop: 20,
-                height : 80,
+                paddingTop: 10,
+                height : 70,
             },
             android: {
                 height : 60,

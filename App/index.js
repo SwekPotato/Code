@@ -11,7 +11,7 @@ import CallPage from './pages/Call';
 import TopicsPage from './pages/Topics';
 import TranscriptPage from './pages/Transcript';
 import ForgotPwd from './pages/ForgotPwd';
-import AddMeetingPage from './pages/AddMeeting';
+//import AddMeetingPage from './pages/AddMeeting';
 import SettingUserInfoPage from './pages/SettingUserInfo';
 import SettingPasswordPage from './pages/SettingPassword';
 import SchedulingPage from './pages/Scheduling';
@@ -97,9 +97,11 @@ const App = StackNavigator({
       gesturesEnabled: false,
     }
   },
+  /*
   AddMeeting : {
     screen: AddMeetingPage
-  }, 
+  },
+  */ 
   AddAvailability : {
     screen: AddAvailabilityPage
   }, 

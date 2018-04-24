@@ -18,9 +18,10 @@ class SettingUserInfo extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            id: '',
             email: '',
             username : '',
-            age : '',
+            ageGroup : '',
             timezone : '',
            // security : '',
            // answer : '',
@@ -52,25 +53,28 @@ class SettingUserInfo extends Component {
         const user = await response.json()
         //console.log("user : ", user)
         this.setState(
-            { //email : user.email ,
+            {
              username : user.name,
              ageGroup: user.ageGroup,
              //security : user.securityQuestion,
              timezone : user.timezone,
              //answer : user.securityAnswer,
              skypeId : user.skypeId,
+             id: user.id,
             })
     }
 
     handleUpdate = async () => {
         console.log("handleUpdate");
-        const user = Object.assign({}, this.state)
+        const user = {
+            'ageGroup': this.state.ageGroup,
+            'timezone': this.state.timezone,
+            'skypeId' : this.state.skypeId,
+        }
         console.log("user:", user)
         // TODO: need to check whether to encode password or not.
         //user.password = base64.encode(user.password)
-        let userId = this.state.email
-        console.log("userId:", userId)
-      
+        let userId = this.state.id      
         const response = await apiClient(`user/${userId}`, {
             method: "PATCH",
             headers: {
@@ -87,7 +91,7 @@ class SettingUserInfo extends Component {
         console.log("User setting update done")
 
         const { navigate } = this.props.navigation
-        navigate('Settings', { email: user.email })
+        navigate('Settings',  { email: this.state.email, name: this.state.username })
     }
 
     modalClose = (item) => {
@@ -122,8 +126,8 @@ class SettingUserInfo extends Component {
                     style={{marginBottom :  15}}/>
 
                 <KeyboardAwareView style={styles.container}>
-                    <ShowInput name='Name:' value={this.state.username}/>     
-                    <ShowInput name='Email:' value={this.state.email} />
+                    <ShowInput name='Name: ' value={this.state.username}/>     
+                    <ShowInput name='Email: ' value={this.state.email} />
                     <SelectInput
                         defaulttext='Age group:'
                         //icon='ios-person-add-outline'

@@ -35,6 +35,12 @@ class Settings extends Component {
       navigate('SettingPassword', { email: this.state.email, name: this.state.name })
     }
 
+    handleSignOut = () => {
+        console.log("TODO signout")
+        const { navigate } = this.props.navigation 
+        navigate('Main', { email: ''})
+    }
+      
     render() {
       return (
         <SafeAreaView style={styles.container}>
@@ -49,7 +55,9 @@ class Settings extends Component {
             <LargeButton title='User Info' onPress={this.handleAccountChange} 
              style={{marginBottom : 30}}/>  
             <LargeButton title='Password' onPress={this.handlePasswordChange}
-             style={{marginBottom : 30}}/>        
+             style={{marginBottom : 30}}/>    
+            <LargeButton title='Sign out' onPress={this.handleSignOut}
+             style={{marginBottom : 30}}/>         
 
         </SafeAreaView>
       )

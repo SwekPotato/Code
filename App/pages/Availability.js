@@ -93,7 +93,8 @@ class Availability extends Component {
     loadAvailability = async () => {
         console.log("load availability")
 
-        const response = await apiClient('availability', {
+        const table_name = isSenior ? 'TeacherAvailability' : 'StudentAvailability'
+        const response = await apiClient(`${table_name}/mine`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -114,13 +115,15 @@ class Availability extends Component {
         const items = Object.assign({}, this.state.items)
 
         for(let i = 0; i < availability.length; i++) {
-            //console.log('availability : ' , availability[i])
-            const { date, startTime, endTime, teacherId, studentId, id } = availability[i]
+            console.log('availability : ' , availability[i])
+            const { date, startTime, endTime, teacherId, studentId, id, active } = availability[i]
+            if (!active) continue
+            
             //console.log("id: ", id);
             // Get my availability.
             if (this.state.isSenior && teacherId != this.state.email) continue;
             if (!this.state.isSenior && studentId != this.state.email) continue;
-
+            
             //console.log("add availability");
             const start = new Date(startTime)
             const end = new Date(endTime)
@@ -129,8 +132,8 @@ class Availability extends Component {
             const existingAvailability = items[date] || []
             const time = startString + '-' + endString
            
-            const newAvailability = 
-                {
+            const newAvailability = {
+                id: id,
                 time: time,
                 name: '',
                 action: 'Available',
@@ -146,7 +149,7 @@ class Availability extends Component {
             items : this.getItems(items, this.state.date.getFullYear(),
                                   this.state.date.getMonth() + 1)
         });
-        console.log("Get Items : " , this.state.items)
+        //console.log("Get Items : " , this.state.items)
     }
 
     pressItem = (info) => {
@@ -155,13 +158,13 @@ class Availability extends Component {
     }
 
     renderItem = (info) => {
-       return <ListItem  info={info} onDelete={() => this.pressDelete(info)} />       
+       return <ListItem  info={info} onDelete={() => this.confirm(info)} />       
     }
 
     confirm = (info) => {
         Alert.alert(
-          'Meeting deletion',
-          'Do you want to delete this schedule?',
+          '',
+          'Do you want to delete this availability?',
           [
             {text: 'OK', onPress: () => this.pressDelete(info)},
             {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
@@ -175,8 +178,9 @@ class Availability extends Component {
         //keep referencing this.loaditems
         console.log("Delete availability : " , info)
         let availabilityId = info.id
-        console.log("availabilityID : " , availabilityId)        
-        const response = await apiClient(`availability/${availabilityId}`, {
+        console.log("availabilityID : " , availabilityId)   
+        const table_name = isSenior ? 'TeacherAvailability' : 'StudentAvailability'     
+        const response = await apiClient(`${table_name}/${availabilityId}`, {
             method: "DELETE",
         })
         if (!response.ok || response.status === 204) {
@@ -185,9 +189,9 @@ class Availability extends Component {
             console.log("DeleteAvailability error")
             return
         } 
- 
+        // Reset the state and reload data.
         this.setState({items : {}})
-        this.loadItems()    
+        this.loadAvailability()    
         console.log("Availability deleted")
     }
 

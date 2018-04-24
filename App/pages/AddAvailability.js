@@ -21,17 +21,17 @@ class AddAvailability extends React.Component {
         super(props)
         const now = new Date();
         this.state = {
-            email: '',
-            isSenior: false,
+            //email: '',
             teacherId: '',
             studentId: '',
             date: now,
             startTime: now,
             endTime: new Date(now.getTime() + 30 * 60 * 1000),
+            active: true,
         };
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
-            this.state.email = props.navigation.state.params.email;
-            this.state.isSenior = props.navigation.state.params.isSenior;
+            //this.state.email = props.navigation.state.params.email;
+            //this.state.isSenior = props.navigation.state.params.isSenior;
             this.state.teacherId = props.navigation.state.params.teacherId;
             this.state.studentId = props.navigation.state.params.studentId;
         }
@@ -42,7 +42,8 @@ class AddAvailability extends React.Component {
         const availability = Object.assign({}, this.state)
 
         console.log("Avaliability : " , availability)
-        const response = await apiClient('availability', {
+        const table_name = isSenior ? 'TeacherAvailability' : 'StudentAvailability'
+        const response = await apiClient(table_name, {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -89,7 +90,7 @@ class AddAvailability extends React.Component {
                         placeholder='Start time'
                         mode='time'
                         onDateChange={(date) => this.setState({ startTime : date})}
-                        date={moment(this.state.startTime).format('h:mm a')}/>   
+                        date={this.state.startTime}/>      
 
                     <DatePicker
                         confirmBtnText="Confirm"

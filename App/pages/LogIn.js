@@ -13,7 +13,7 @@ class LogIn extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: 'jon@gmail.com',
+            email: 'debby@gmail.com',
             password: 'abc',
             passowrdMismatch: false
         }
@@ -56,7 +56,7 @@ class LogIn extends React.Component {
             return
         }
 
-        isSenior = (ageGroup == 'more than 55' ? true : false);
+        isSenior = (ageGroup == '55 or more' ? true : false);
         teacherId = isSenior ? user.email : '';
         studentId = isSenior ? '' : user.email;
         console.log("** Login user:", user.email, ":", token);

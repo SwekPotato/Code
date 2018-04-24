@@ -46,7 +46,7 @@ class Scheduling extends Component {
         return (
             <SafeAreaView style={{width : width, height : height - 50 }}>
                 <Header
-                    title='Add My Meetings'
+                    title='Schedule Meetings'
                     mode='home'
                     //icon='ios-add'
                     //onPress={() => this.addEvent()}
@@ -62,32 +62,39 @@ class Scheduling extends Component {
             </SafeAreaView>
         );
       }
-
+/*
     addEvent = () => {
         const {navigate} = this.props.navigation;
         navigate('AddMeeting', { studentId: this.state.studentId, teacherId: this.state.teacherId });    
     }
-
+*/
     getItems = (oldItems, year, month) => {
         const items = Object.assign({}, oldItems);
-
         for(let day = 0; day < 31; day++) {
             const dateString = `${year}-${leftPad(month, 2, 0)}-${leftPad(day, 2, 0)}`;
             if (!items[dateString]) {
                 items[dateString] = [];
             }
         }
+        //console.log("getItem", items);
         return items;
     }
   
     loadSchedule = async () => {
         console.log("load schedule")
-        const response = await apiClient('availability', {
+
+        // Seniors look at student availability to schedule a meeting.
+        // Students look at senior availability to schedule a meeting.
+        const table_name = isSenior ?  'StudentAvailability' : 'TeacherAvailability' 
+        console.log("table:", table_name)
+        const response = await apiClient(table_name, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
             },
         })
+        console.log("get schedule response:", response)
+
         if (!response.ok || response.status == 204) {
             this.setState({
                 items : this.getItems(items, this.state.date.getFullYear(),
@@ -102,22 +109,26 @@ class Scheduling extends Component {
         const items = Object.assign({}, this.state.items)
 
         for(let i = 0; i < availability.length; i++) {
-            //console.log('availability : ' , availability[i])
-            const { date, startTime, endTime, teacherId, studentId, id } = availability[i]
+            console.log('availability : ' , availability[i])
+            const { id, active, date, startTime, endTime, studentId, teacherId } = availability[i]
 
-            if (typeof(studentId) == 'undefined' && typeof(teacherId) == 'undefined') continue;
-            if (studentId == "" && teacherId == "") continue;
+            console.log("stduentId:", typeof(studentId))
+            console.log("teacherId:", typeof(teacherId))
+            console.log("date:", date)
+            console.log("startTime:", startTime)
+            console.log("endTime:", endTime)
 
+            if (!active) continue;
+            
             // If the user is senior, need student availability.
             // If the user is not senior, need teacher availability.
-
             if (isSenior) {
-                if (studentId == null || studentId == "") continue;
+                if (typeof(studentId) == 'undefined') continue;
             } else {
-                if (teacherId == null || teacherId == "") continue;
+                if (typeof(teacherId) == 'undefined') continue;
             }
 
-            const buddyId = isSenior ? stduentId : teacherId;
+            const buddyId = isSenior ? studentId : teacherId;
             console.log("buddyId:", buddyId)
 
             // console.log("Type of TeacherId : ", typeof(teacherId))
@@ -136,26 +147,31 @@ class Scheduling extends Component {
             //console.log("Teacher : " , teacher);
             const start = new Date(startTime)
             const end = new Date(endTime)
+            const availableDate = new Date(date)
             const startString = `${start.getHours()}:${start.getMinutes()}`
             const endString = `${end.getHours()}:${end.getMinutes()}`
             const existingMeetings = items[date] || []
             const name = `${buddy.name}`
             const time = startString + '-' + endString
 
+            console.log("stduentId:", typeof(studentId) == 'undefined')
+            console.log("teacherId:", teacherId)
             const newMeeting = {
-                startTime: startString, 
-                endTime: endString, 
                 time: time,
                 name: name,
-                id: id, 
-                buddyId: buddyId}
+                availabilityId: id,
+                teacherId: typeof(teacherId) == 'undefined' ? this.state.email : teacherId,
+                studentId: typeof(studentId) == 'undefined' ? this.state.email : studentId,
+                date: availableDate,
+                startTime: start, 
+                endTime: end, 
+                active: active,
+            }
                 //console.log("newMeeting")
                 //console.log(...existingMeetings)
             items[date] = [...existingMeetings, newMeeting]  
             //console.log("Items")
         }
-        //console.log("Items : " , items)
-        //console.log('Meetings : ' , availability)
         this.setState({
             items : this.getItems(items, this.state.date.getFullYear(),
                                   this.state.date.getMonth() + 1)
@@ -184,18 +200,16 @@ class Scheduling extends Component {
     }
 
     addMeeting = async (info) => {
-        const meeting = Object.assign({}, this.state.items)
-        console.log("info:", info)
-        const meeting = 
-        {
-            studentId: this.state.studentId,
-            teacherId: this.state.teacherId,
+        //const meeting = Object.assign({}, this.state.items)
+        //console.log("info:", info)
+        const meeting = {
+            studentId: info.studentId,
+            teacherId: info.teacherId,
             date: info.date,
             startTime: info.startTime,
-            endTime: info.startTime,
+            endTime: info.endTime,
         }
-
-        console.log("Meeting : " , meeting)
+        console.log("Add Meeting : " , meeting)
         const response = await apiClient('meeting', {
             method: "POST",
             headers: {
@@ -210,10 +224,39 @@ class Scheduling extends Component {
             console.log("Scheduling error")
             return
         }
-        console.log("Scheduling done")
+        console.log("Add meeting done")
+
+        this.updateAvailability(info)
 
         const { navigate } = this.props.navigation
         navigate('Home', { email: this.state.email })
+    }
+
+    updateAvailability = async(info) => {
+        //copy meetings you already have, find meetings you need to delete, then delete from object/array
+        //keep referencing this.loaditems
+        console.log("Update availability : " , info)
+        let availabilityId = info.availabilityId
+        console.log("availabilityID : " , availabilityId)  
+        const availability = {
+            'active': false,
+        } 
+        const table_name = this.state.isSenior ?  'StudentAvailability' : 'TeacherAvailability' 
+        const response = await apiClient(`${table_name}/${availabilityId}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": 'application/json',
+            },
+            body: JSON.stringify(availability)
+        })
+        if (!response.ok || response.status === 204) {
+            // Display error message
+            console.log("Response : " , response)
+            console.log("updateAvailability error")
+            return
+        } 
+        // Reset the state and reload data.  
+        console.log("updateAvailability done")
     }
 
     renderEmptyDate = () => {
