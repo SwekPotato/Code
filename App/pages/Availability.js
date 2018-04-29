@@ -36,7 +36,8 @@ class Availability extends Component {
             this.state.teacherId = props.navigation.state.params.teacherId;
         }
         console.log("** Availability: teacherId: " + this.state.teacherId, 
-        ", studentId: " + this.state.studentId);   
+        ", studentId: " + this.state.studentId + ", isSenior:" + this.state.isSenior + ", email:" + 
+        this.state.email);   
         
         this.loadAvailability()
     }
@@ -45,7 +46,7 @@ class Availability extends Component {
         return (
             <SafeAreaView style={{width : width, height : height - 50 }}>
                 <Header
-                    title='Add Availability'
+                    title='My Availability'
                     mode='normal'
                     icon='ios-add'
                     onPress={() => this.addEvent()}/>
@@ -70,7 +71,9 @@ class Availability extends Component {
 
     addEvent = () => {
         const {navigate} = this.props.navigation;
-        navigate('AddAvailability', { teacherId: this.state.teacherId, studentId : this.state.studentId});    
+        navigate('AddAvailability', { 
+            id: this.state.id, email: this.state.email, isSenior: this.state.isSenior,
+            teacherId: this.state.teacherId, studentId : this.state.studentId});    
     }
 
     pressCall = () => {
@@ -119,18 +122,23 @@ class Availability extends Component {
             const { date, startTime, endTime, teacherId, studentId, id, active } = availability[i]
             if (!active) continue
             
-            //console.log("id: ", id);
+            console.log("id: ", this.state.isSenior)
+            console.log("isSenior: ", this.state.isSenior)
+            console.log("studentId: ", studentId)
+            console.log("teacherId: ", teacherId)
             // Get my availability.
             if (this.state.isSenior && teacherId != this.state.email) continue;
             if (!this.state.isSenior && studentId != this.state.email) continue;
             
             //console.log("add availability");
-            const start = new Date(startTime)
-            const end = new Date(endTime)
-            const startString = `${start.getHours()}:${start.getMinutes()}`
-            const endString = `${end.getHours()}:${end.getMinutes()}`
+            // const start = new Date(startTime)
+            // const end = new Date(endTime)
+            // const startString = `${start.getHours()}:${start.getMinutes()}`
+            // const endString = `${end.getHours()}:${end.getMinutes()}`
+            const startString = moment(startTime).format('h:mm a')
+            const endString = moment(endTime).format('h:mm a')
             const existingAvailability = items[date] || []
-            const time = startString + '-' + endString
+            const time = startString + '  -  ' + endString
            
             const newAvailability = {
                 id: id,
@@ -138,12 +146,11 @@ class Availability extends Component {
                 name: '',
                 action: 'Available',
                 }
-                console.log("newAvailability:", newAvailability)
-                console.log(...existingAvailability)
+            //console.log("newAvailability:", newAvailability)
+            //console.log(...existingAvailability)
             items[date] = [...existingAvailability, newAvailability]  
-            
         }
-        console.log("Items : " , items)
+        //console.log("Items : " , items)
         //console.log('availability : ' , availability)
         this.setState({
             items : this.getItems(items, this.state.date.getFullYear(),

@@ -11,10 +11,9 @@ import CallPage from './pages/Call';
 import TopicsPage from './pages/Topics';
 import TranscriptPage from './pages/Transcript';
 import ForgotPwd from './pages/ForgotPwd';
-//import AddMeetingPage from './pages/AddMeeting';
 import SettingUserInfoPage from './pages/SettingUserInfo';
 import SettingPasswordPage from './pages/SettingPassword';
-import SchedulingPage from './pages/Scheduling';
+import AddMeetingPage from './pages/AddMeeting';
 import AvailabilityPage from './pages/Availability';
 import AddAvailabilityPage from './pages/AddAvailability';
 
@@ -45,7 +44,7 @@ const HomeTabScreen = TabNavigator({
   //Topics: {screen: TopicsPage},
   // Call: {screen: CallPage},
   //History: {screen: HistoryPage},
-  Scheduling: {screen: SchedulingPage},
+  //Scheduling: {screen: SchedulingPage},
   Availability: {screen: AvailabilityPage},
   Settings: {screen: SettingsPage}
 }, {
@@ -97,11 +96,9 @@ const App = StackNavigator({
       gesturesEnabled: false,
     }
   },
-  /*
   AddMeeting : {
     screen: AddMeetingPage
   },
-  */ 
   AddAvailability : {
     screen: AddAvailabilityPage
   }, 

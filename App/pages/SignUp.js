@@ -111,7 +111,7 @@ class SignUp extends React.Component {
     }
 
     render() {
-        console.log(this.state)
+        //console.log(this.state)
         const { goBack } = this.props.navigation
         return (
             <SafeAreaView style={styles.container}>

@@ -50,10 +50,10 @@ const Header = ({ title, onPress, mode, rightButton, style, icon}) => {
 };
 
 Header.defaultProps = {
-    title : 'login', // mode가 logo 일때는 타이틀이 요구되지 않음.
+    title : 'login', 
     onPress : () => console.log('header on press'),
-    mode : 'normal', //normal : 상단에 타이틀과 닫기 표시가 있는 헤더, logo : 로고가 있는 헤더
-    rightButton : true, // 외쪽 버튼이 필요 없으면 false
+    mode : 'normal',
+    rightButton : true, // If true, show the right button
     icon : 'ios-close-outline'
 }
 

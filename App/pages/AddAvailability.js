@@ -15,27 +15,32 @@ import OptionModal from '../components/OptionModal';
 import { Calendar, CalendarList, Agenda } from 'react-native-calendars';
 import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
+import Label from '../components/Label';
+import { color, fonts } from '../setting';
 
 class AddAvailability extends React.Component {
     constructor(props) {
         super(props)
         const now = new Date();
         this.state = {
-            //email: '',
-            teacherId: '',
+            email: '',
+            isSenior: false,
             studentId: '',
+            teacherId: '',
             date: now,
             startTime: now,
             endTime: new Date(now.getTime() + 30 * 60 * 1000),
             active: true,
         };
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
-            //this.state.email = props.navigation.state.params.email;
-            //this.state.isSenior = props.navigation.state.params.isSenior;
+            this.state.email = props.navigation.state.params.email;
+            this.state.isSenior = props.navigation.state.params.isSenior;
             this.state.teacherId = props.navigation.state.params.teacherId;
             this.state.studentId = props.navigation.state.params.studentId;
         }
-        console.log("Add Ava: teacehrId: " + this.state.teacherId, ", stid: ", this.state.studentId);        
+        console.log("** Add Avail: teacherId: " + this.state.teacherId, 
+        ", studentId: " + this.state.studentId + ", isSenior:" + this.state.isSenior + ", email:" + 
+        this.state.email);          
     }
 
     handleScheduling = async () => {
@@ -61,7 +66,7 @@ class AddAvailability extends React.Component {
 
         const { navigate } = this.props.navigation
         navigate('Availability', { email: this.state.email, isSenior: this.state.isSenior,
-                            teacherId: this.state.teacherId, studentId: this.state.studentId})
+                                   teacherId: this.state.teacherId, studentId: this.state.studentId})
     }
 
     render() {
@@ -73,13 +78,29 @@ class AddAvailability extends React.Component {
                 title='Add Availability'
                 mode='normal'
                 onPress={() => this.props.navigation.goBack(null)}
-                style={{marginBottom :  50}}/>
-                <KeyboardAwareView>
+                style={{marginBottom :  150}}/>
+                <KeyboardAwareView style={styles.picker}>
                     <DatePicker
+                        style={styles.pickInput}
                         confirmBtnText="Confirm"
                         cancelBtnText="Cancel"
                         placeholder='Date'
                         mode='date'
+                        customStyles={{
+                            dateIcon: {
+                              position: 'absolute',
+                              left: 0,
+                              top: 4,
+                              marginLeft: 0
+                            },
+                            dateInput: {
+                                marginLeft: 36,
+                                borderWidth: 0,
+                                height: 40,
+                                borderBottomWidth: 1,
+                            }
+                            // ... You can check the source to find the other keys.
+                          }}
                         onDateChange={(date) => this.setState({ date : date})}
                         date={moment(this.state.date).format('YYYY-MM-DD')}/>
 
@@ -89,8 +110,8 @@ class AddAvailability extends React.Component {
                         format="h:mm a"
                         placeholder='Start time'
                         mode='time'
-                        onDateChange={(date) => this.setState({ startTime : date})}
-                        date={this.state.startTime}/>      
+                        onDateChange={(_, date) => this.setState({ startTime : date})}
+                        date={(this.state.startTime)}/>      
 
                     <DatePicker
                         confirmBtnText="Confirm"
@@ -98,12 +119,10 @@ class AddAvailability extends React.Component {
                         format="h:mm a"
                         placeholder='End time'
                         mode='time'
-                        onDateChange={(date) => this.setState({ endTime : date})}
-                        date={this.state.endTime}/>         
+                        onDateChange={(_, date) => this.setState({ endTime : date})}
+                        date={(this.state.endTime)}/>          
                 </KeyboardAwareView>
 
-                {/* If all the fields are entered, change disable to false로 so the button is enabled. */}
-                {/*<FooterButton disable={true} onPress={() => console.log('sign up press')}/> */}
                 <FooterButton disable={false} onPress={this.handleScheduling}/>
                
             </SafeAreaView>
@@ -115,6 +134,22 @@ const styles = StyleSheet.create({
     container: {
         flex : 1,
         backgroundColor : 'white',
+        justifyContent: 'center',
+    },
+    picker : {
+        marginTop : 100,
+        //marginBottom : 50,
+        //paddingLeft: 30,
+    },
+    pickInput : {
+        flex : 1,
+        lineHeight : 30,
+        fontFamily: fonts.regular,
+        fontSize: 19,
+        color: "black", //"#9b9b9b",
+        marginLeft : 20,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
 })
 
