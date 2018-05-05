@@ -19,6 +19,7 @@ class Availability extends Component {
         const now = new Date();
         //console.log("currnent date:" , now);
         this.state = {
+            id: '',
             email: '',
             isSenior: false,
             studentId: '',
@@ -30,6 +31,7 @@ class Availability extends Component {
         };
 
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
+            this.state.id = props.navigation.state.params.id;
             this.state.email = props.navigation.state.params.email;
             this.state.isSenior = props.navigation.state.params.isSenior;
             this.state.studentId = props.navigation.state.params.studentId;
@@ -122,15 +124,16 @@ class Availability extends Component {
             const { date, startTime, endTime, teacherId, studentId, id, active } = availability[i]
             if (!active) continue
             
-            console.log("id: ", this.state.isSenior)
+            console.log("id: ", this.state.id)
             console.log("isSenior: ", this.state.isSenior)
             console.log("studentId: ", studentId)
             console.log("teacherId: ", teacherId)
+            console.log("email: ", this.state.email)
             // Get my availability.
             if (this.state.isSenior && teacherId != this.state.email) continue;
             if (!this.state.isSenior && studentId != this.state.email) continue;
             
-            //console.log("add availability");
+            console.log("Get availability");
             // const start = new Date(startTime)
             // const end = new Date(endTime)
             // const startString = `${start.getHours()}:${start.getMinutes()}`

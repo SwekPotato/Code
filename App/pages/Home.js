@@ -39,7 +39,7 @@ class Home extends Component {
         }
         console.log("** Home: teacherId: " + this.state.teacherId, 
         ", studentId: " + this.state.studentId + ", isSenior:" + this.state.isSenior + ", email:" + 
-        this.state.email);    
+        this.state.email, ", id:", this.state.id);    
                     
         this.loadItems()    
     }

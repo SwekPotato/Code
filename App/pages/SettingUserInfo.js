@@ -21,6 +21,9 @@ class SettingUserInfo extends Component {
             id: '',
             email: '',
             username : '',
+            isSenior: false,
+            studentId: '',
+            teacherId: '',
             ageGroup : '',
             timezone : '',
            // security : '',
@@ -29,9 +32,17 @@ class SettingUserInfo extends Component {
         }
 
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
+            this.state.id = props.navigation.state.params.id;
             this.state.email = props.navigation.state.params.email;
+            this.state.isSenior = props.navigation.state.params.isSenior;
+            this.state.studentId = props.navigation.state.params.studentId;
+            this.state.teacherId = props.navigation.state.params.teacherId;
         }
         this.loadItems()
+
+        console.log("** Userinfo: teacherId: " + this.state.teacherId, 
+        ", studentId: " + this.state.studentId + ", isSenior:" + this.state.isSenior + ", email:" + 
+        this.state.email, ", id:", this.state.id);    
 
         this.modalDivision = null;
     }
@@ -71,14 +82,15 @@ class SettingUserInfo extends Component {
             'timezone': this.state.timezone,
             'skypeId' : this.state.skypeId,
         }
-        console.log("user:", user)
+        //console.log("user:", user)
         // TODO: need to check whether to encode password or not.
         //user.password = base64.encode(user.password)
-        let userId = this.state.id      
+        let userId = this.state.id  
+        console.log("userId:", userId)    
         const response = await apiClient(`user/${userId}`, {
             method: "PATCH",
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json' 
             },
             body: JSON.stringify(user),
         })
@@ -91,7 +103,9 @@ class SettingUserInfo extends Component {
         console.log("User setting update done")
 
         const { navigate } = this.props.navigation
-        navigate('Settings',  { email: this.state.email, name: this.state.username })
+        navigate('Settings', 
+           { id: this.state.id, email: this.state.email, isSenior: this.state.isSenior,
+             teacherId: this.state.teacherId, studentId: this.state.studentId})
     }
 
     modalClose = (item) => {

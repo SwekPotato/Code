@@ -13,7 +13,7 @@ class LogIn extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: 'debby@gmail.com',
+            email: 'jon@gmail.com',
             password: 'abc',
             passowrdMismatch: false
         }
@@ -30,6 +30,7 @@ class LogIn extends React.Component {
         this.setState({ passowrdMismatch : false });
         const user = Object.assign({}, this.state)
         user.password = base64.encode(user.password)
+        console.log("user:", user)
         const response = await apiClient('auth/login', {
             method: "POST",
             headers: {
@@ -44,7 +45,7 @@ class LogIn extends React.Component {
         }
 
         //Save the JSON web token
-        const { token, ageGroup } = await response.json()
+        const { token, ageGroup, id } = await response.json()
         try {
             await AsyncStorage.setItem('@letsunite:jwt', token)
             console.log("AgeGroup : " + ageGroup)
@@ -59,9 +60,9 @@ class LogIn extends React.Component {
         isSenior = (ageGroup == '55 or more' ? true : false);
         teacherId = isSenior ? user.email : '';
         studentId = isSenior ? '' : user.email;
-        console.log("** Login user:", user.email, ":", token);
+        console.log("** Login user:", user.email, ", token:", token, ",id:", id);
         const { navigate } = this.props.navigation
-        navigate('Home', { email: user.email, isSenior: isSenior, id: token,
+        navigate('Home', { email: user.email, isSenior: isSenior, id: id,
             teacherId: teacherId, studentId: studentId })
     }
 

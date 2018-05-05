@@ -13,24 +13,41 @@ import FooterButton from '../components/FooterButtonUpdate';
 import SelectInput from '../components/SelectInput';
 import OptionModal from '../components/OptionModal';
 import {CheckBox} from 'react-native-elements';
+import ErrorMessage from '../components/ErrorMessage';
 
 class SettingPassword extends React.Component {
     constructor(props) {
         super(props)
         this.state = {
-            name: '',
+            id: '',
             email: '',
+            name: '',
+            isSenior: false,
+            studentId: '',
+            teacherId: '',
             password: '',
             newPassword: '',
             hidePassword: false,
+            invalidPassword: false
         };
         this.modalDivision = null;
+
+        if (props.navigation && props.navigation.state && props.navigation.state.params) {
+            this.state.id = props.navigation.state.params.id;
+            this.state.email = props.navigation.state.params.email;
+            this.state.isSenior = props.navigation.state.params.isSenior;
+            this.state.studentId = props.navigation.state.params.studentId;
+            this.state.teacherId = props.navigation.state.params.teacherId;
+        } 
+        console.log("** Password: teacherId: " + this.state.teacherId, 
+        ", studentId: " + this.state.studentId + ", isSenior:" + this.state.isSenior + ", email:" + 
+        this.state.email, ", id:", this.state.id);        
     }
 
     validatePassword = (text) => {
         const password = this.state.newPassword
         if(password !== text) {
-            return "Not the same password"
+            return "New password should not be same"
         }
     }
 
@@ -39,30 +56,43 @@ class SettingPassword extends React.Component {
     }
 
     handleChangePassword = async () => {
+        this.state.invalidPassword = false
+        if (!this.state.password  || !this.state.newPassword ||
+            this.state.password  == this.state.newPassword) {
+            this.setState({ invalidPassword : true })
+            return;
+        }
+
+        let userId = this.state.id      
+        console.log("userId:", userId)
         const user = Object.assign({}, this.state)
         user.password = base64.encode(user.password)
+        user.newPassword = base64.encode(user.newPassword)
 
-        const response = await apiClient('user', {
-            method: "POST",
+        //console.log("user:", user)
+        const response = await apiClient(`user/${userId}/changePassword`, {
+            method: "PATCH",
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(user),
         })
-
+        //console.log(response)
         if (!response.ok) {
             // Display error message
-            console.log("sign up error")
+            console.log("password change error")
             return
         }
         console.log("change password done")
 
         const { navigate } = this.props.navigation
-        navigate('Settings', { email: user.email })
+        navigate('Settings',
+            { id: this.state.id, email: this.state.email, isSenior: this.state.isSenior,
+              teacherId: this.state.teacherId, studentId: this.state.studentId})
     }
 
     render() {
-        console.log(this.state)
+        //console.log(this.state)
         const { goBack } = this.props.navigation
         return (
             <SafeAreaView style={styles.container}>
@@ -94,6 +124,10 @@ class SettingPassword extends React.Component {
                             this.setState({ hidePassword : !this.state.hidePassword })
                         }}      
                         />
+                    {
+                    this.state.invalidPassword && 
+                    <ErrorMessage/>
+                    }
                 </KeyboardAwareView>
 
                 <FooterButton disable={false} onPress={this.handleChangePassword}/>

@@ -17,22 +17,36 @@ class Settings extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            email: 'Jon@gmail.com',
-            name: 'Jon',
+            id: '',
+            email: '',
+            name: '',
+            isSenior: false,
+            studentId: '',
+            teacherId: '',
         }
         if (props.navigation && props.navigation.state && props.navigation.state.params) {
+            this.state.id = props.navigation.state.params.id;
             this.state.email = props.navigation.state.params.email;
-            this.state.name = props.navigation.state.params.name;
+            this.state.isSenior = props.navigation.state.params.isSenior;
+            this.state.studentId = props.navigation.state.params.studentId;
+            this.state.teacherId = props.navigation.state.params.teacherId;
         }
+        console.log("** Setting: teacherId: " + this.state.teacherId, 
+        ", studentId: " + this.state.studentId + ", isSenior:" + this.state.isSenior + ", email:" + 
+        this.state.email, ", id:", this.state.id);    
     }    
     handleAccountChange = () => {
       const { navigate } = this.props.navigation 
-      navigate('SettingUserInfo', { email: this.state.email, name: this.state.name })
+      navigate('SettingUserInfo', 
+          { id: this.state.id, email: this.state.email, isSenior: this.state.isSenior,
+            teacherId: this.state.teacherId, studentId: this.state.studentId})
     }
   
     handlePasswordChange = () => {
       const { navigate } = this.props.navigation 
-      navigate('SettingPassword', { email: this.state.email, name: this.state.name })
+      navigate('SettingPassword', 
+            { id: this.state.id, email: this.state.email, isSenior: this.state.isSenior,
+                teacherId: this.state.teacherId, studentId: this.state.studentId})
     }
 
     handleSignOut = () => {

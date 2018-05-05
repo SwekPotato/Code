@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, Picker, DatePickerIOS } from 'react-native'
+import { StyleSheet, Text, View, Picker, DatePickerIOS, Dimensions } from 'react-native'
 import TextInput from '../components/TextInput'
 import Button from '../components/Button'
 import base64 from 'base-64'
+import StyleDatePicker from '../components/DatePicker'
 import KeyboardAwareView from '../components/KeyboardAwareView';
 import DropdownInput from '../components/DropdownInput';
 import { apiClient } from '../services/api';
@@ -17,6 +18,8 @@ import DatePicker from 'react-native-datepicker'
 import moment from 'moment';
 import Label from '../components/Label';
 import { color, fonts } from '../setting';
+
+const { width, height } = Dimensions.get('window');
 
 class AddAvailability extends React.Component {
     constructor(props) {
@@ -38,15 +41,15 @@ class AddAvailability extends React.Component {
             this.state.teacherId = props.navigation.state.params.teacherId;
             this.state.studentId = props.navigation.state.params.studentId;
         }
-        console.log("** Add Avail: teacherId: " + this.state.teacherId, 
+        console.log("** Add Ava: teacherId: " + this.state.teacherId, 
         ", studentId: " + this.state.studentId + ", isSenior:" + this.state.isSenior + ", email:" + 
-        this.state.email);          
+        this.state.email, ", id:", this.state.id);        
     }
 
     handleScheduling = async () => {
         const availability = Object.assign({}, this.state)
 
-        console.log("Avaliability : " , availability)
+        //console.log("Avaliability : " , availability)
         const table_name = isSenior ? 'TeacherAvailability' : 'StudentAvailability'
         const response = await apiClient(table_name, {
             method: "POST",
@@ -65,8 +68,9 @@ class AddAvailability extends React.Component {
         console.log("AddAvaliability done")
 
         const { navigate } = this.props.navigation
-        navigate('Availability', { email: this.state.email, isSenior: this.state.isSenior,
-                                   teacherId: this.state.teacherId, studentId: this.state.studentId})
+        navigate('Availability', 
+                { id: this.state.id, email: this.state.email, isSenior: this.state.isSenior,
+                  teacherId: this.state.teacherId, studentId: this.state.studentId})
     }
 
     render() {
@@ -80,47 +84,26 @@ class AddAvailability extends React.Component {
                 onPress={() => this.props.navigation.goBack(null)}
                 style={{marginBottom :  150}}/>
                 <KeyboardAwareView style={styles.picker}>
-                    <DatePicker
-                        style={styles.pickInput}
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        placeholder='Date'
+                    <StyleDatePicker
+                        defaulttext='Date:          '
                         mode='date'
-                        customStyles={{
-                            dateIcon: {
-                              position: 'absolute',
-                              left: 0,
-                              top: 4,
-                              marginLeft: 0
-                            },
-                            dateInput: {
-                                marginLeft: 36,
-                                borderWidth: 0,
-                                height: 40,
-                                borderBottomWidth: 1,
-                            }
-                            // ... You can check the source to find the other keys.
-                          }}
-                        onDateChange={(date) => this.setState({ date : date})}
-                        date={moment(this.state.date).format('YYYY-MM-DD')}/>
+                        format='YYYY-MM-DD'
+                        onDateChange={(_, date) => this.setState({ date : date})}
+                        date={this.state.date}/>
 
-                    <DatePicker
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        format="h:mm a"
-                        placeholder='Start time'
+                    <StyleDatePicker
+                        defaulttext='Start time:'
                         mode='time'
+                        format='h:mm a'
                         onDateChange={(_, date) => this.setState({ startTime : date})}
-                        date={(this.state.startTime)}/>      
-
-                    <DatePicker
-                        confirmBtnText="Confirm"
-                        cancelBtnText="Cancel"
-                        format="h:mm a"
-                        placeholder='End time'
+                        date={this.state.startTime}/>
+                      
+                      <StyleDatePicker
+                        defaulttext='End time:  '
                         mode='time'
+                        format='h:mm a'
                         onDateChange={(_, date) => this.setState({ endTime : date})}
-                        date={(this.state.endTime)}/>          
+                        date={this.state.endTime}/>         
                 </KeyboardAwareView>
 
                 <FooterButton disable={false} onPress={this.handleScheduling}/>
@@ -151,6 +134,9 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
+    pickContainer : {
+        
+    }
 })
 
 AddAvailability.navigationOptions = {

@@ -16,6 +16,7 @@ import SettingPasswordPage from './pages/SettingPassword';
 import AddMeetingPage from './pages/AddMeeting';
 import AvailabilityPage from './pages/Availability';
 import AddAvailabilityPage from './pages/AddAvailability';
+//import LoadingPage from './pages/Loading';
 
 // const App = StackNavigator({
 //   Main: { screen: MainPage }, 
@@ -107,7 +108,11 @@ const App = StackNavigator({
   },
   SettingPassword : {
     screen: SettingPasswordPage
-  }     
+  },      
+  //Loading : {
+  //  screen: LoadingPage
+  //}  
+
 },{
     mode: 'modal',
     headerMode: 'none'
