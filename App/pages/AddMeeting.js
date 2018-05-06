@@ -159,7 +159,7 @@ class AddMetting extends Component {
             const newMeeting = {
                 time: time,
                 name: name,
-                //availabilityId: id,
+                availabilityId: id,
                 teacherId: typeof(teacherId) == 'undefined' ? this.state.email : teacherId,
                 studentId: typeof(studentId) == 'undefined' ? this.state.email : studentId,
                 date: availableDate,
@@ -227,39 +227,10 @@ class AddMetting extends Component {
         }
         console.log("Add meeting done")
 
-        this.updateAvailability(info)
-
         const { navigate } = this.props.navigation
         navigate('Home', { id: this.state.id, email: this.state.email,
             isSenior: this.state.isSenior, studentId: this.state.studentId, 
             teacherId: this.state.teacherId })
-    }
-
-    updateAvailability = async(info) => {
-        //copy meetings you already have, find meetings you need to delete, then delete from object/array
-        //keep referencing this.loaditems
-        console.log("Update availability : " , info)
-        let availabilityId = info.availabilityId
-        console.log("availabilityID : " , availabilityId)  
-        const availability = {
-            'active': false,
-        } 
-        const table_name = this.state.isSenior ?  'StudentAvailability' : 'TeacherAvailability' 
-        const response = await apiClient(`${table_name}/${availabilityId}`, {
-            method: "PATCH",
-            headers: {
-                "Content-Type": 'application/json',
-            },
-            body: JSON.stringify(availability)
-        })
-        if (!response.ok || response.status === 204) {
-            // Display error message
-            console.log("Response : " , response)
-            console.log("updateAvailability error")
-            return
-        } 
-        // Reset the state and reload data.  
-        console.log("updateAvailability done")
     }
 
     renderEmptyDate = () => {

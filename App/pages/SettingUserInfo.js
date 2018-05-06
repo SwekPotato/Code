@@ -68,7 +68,7 @@ class SettingUserInfo extends Component {
              username : user.name,
              ageGroup: user.ageGroup,
              //security : user.securityQuestion,
-             timezone : user.timezone,
+             //timezone : user.timezone,
              //answer : user.securityAnswer,
              skypeId : user.skypeId,
              id: user.id,
@@ -79,7 +79,7 @@ class SettingUserInfo extends Component {
         console.log("handleUpdate");
         const user = {
             'ageGroup': this.state.ageGroup,
-            'timezone': this.state.timezone,
+            //'timezone': this.state.timezone,
             'skypeId' : this.state.skypeId,
         }
         //console.log("user:", user)
@@ -102,10 +102,8 @@ class SettingUserInfo extends Component {
         }
         console.log("User setting update done")
 
-        const { navigate } = this.props.navigation
-        navigate('Settings', 
-           { id: this.state.id, email: this.state.email, isSenior: this.state.isSenior,
-             teacherId: this.state.teacherId, studentId: this.state.studentId})
+        const { goBack } = this.props.navigation
+        goBack(null)
     }
 
     modalClose = (item) => {
@@ -148,14 +146,14 @@ class SettingUserInfo extends Component {
                         placeholder='ageGroup'
                         onPress={() => this.modalOpen('ageGroup')}
                         value={this.state.ageGroup}/>
-
+{/*}
                     <SelectInput
                         defaulttext='Timezone:'
                         //icon='ios-pin-outline'
                         placeholder='Time zone'
                         onPress={() => this.modalOpen('timezone')}
                         value={this.state.timezone}/>
-{/*}
+
                     <SelectInput
                         icon='ios-help-circle-outline'
                         placeholder='Security question'

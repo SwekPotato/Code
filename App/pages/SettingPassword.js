@@ -85,10 +85,8 @@ class SettingPassword extends React.Component {
         }
         console.log("change password done")
 
-        const { navigate } = this.props.navigation
-        navigate('Settings',
-            { id: this.state.id, email: this.state.email, isSenior: this.state.isSenior,
-              teacherId: this.state.teacherId, studentId: this.state.studentId})
+        const { goBack } = this.props.navigation
+        goBack(null)
     }
 
     render() {

@@ -30,7 +30,7 @@ class LogIn extends React.Component {
         this.setState({ passowrdMismatch : false });
         const user = Object.assign({}, this.state)
         user.password = base64.encode(user.password)
-        console.log("user:", user)
+        //console.log("user:", user)
         const response = await apiClient('auth/login', {
             method: "POST",
             headers: {
@@ -48,7 +48,7 @@ class LogIn extends React.Component {
         const { token, ageGroup, id } = await response.json()
         try {
             await AsyncStorage.setItem('@letsunite:jwt', token)
-            console.log("AgeGroup : " + ageGroup)
+            //console.log("AgeGroup : " + ageGroup)
             await AsyncStorage.setItem('@letsunite:ageGroup', ageGroup)
         } catch(err) {
             console.log("fail setting")

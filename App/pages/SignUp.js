@@ -49,7 +49,7 @@ class SignUp extends React.Component {
             //securityAnswer : null,
             modal : false,
             //securityQuestion : null,
-            timezone : null,
+            //timezone : null,
             skypeId : '',
             hidePassword: false,
         };
@@ -156,13 +156,13 @@ class SignUp extends React.Component {
                         placeholder='Age group'
                         onPress={() => this.modalOpen('ageGroup')}
                         value={this.state.ageGroup}/>
-
+{/*
                     <SelectInput
                         icon='ios-pin-outline'
                         placeholder='Time zone'
                         onPress={() => this.modalOpen('timezone')}
                         value={this.state.timezone}/>
-{/*
+
                     <SelectInput
                         icon='ios-help-circle-outline'
                         placeholder='Security question'

@@ -54,19 +54,12 @@ class Availability extends Component {
                     onPress={() => this.addEvent()}/>
                 <Agenda
                     items={this.state.items}
-                    //loadItemsForMonth={this.loadItems}          
+                    //loadItemsForMonth={this.loadAvailability}          
                     renderItem={this.renderItem}
                     renderEmptyDate={this.renderEmptyDate}
                     selected={moment(this.now).format('YYYY-MM-DD')}
                     rowHasChanged={this.rowHasChanged.bind(this)}
                 />
-                {
-                    this.state.call && 
-                    <CallButton 
-                        onPress={this.pressCall}
-                        name={this.state.chiseItem.name}
-                        time={this.state.chiseItem.time}/>
-                }
             </SafeAreaView>
         );
       }
@@ -86,7 +79,7 @@ class Availability extends Component {
     getItems = (oldItems, year, month) => {
         const items = Object.assign({}, oldItems);
 
-        for(let day = 0; day < 31; day++) {
+        for(let day = 1; day <= 31; day++) {
             const dateString = `${year}-${leftPad(month, 2, 0)}-${leftPad(day, 2, 0)}`;
             if (!items[dateString]) {
                 items[dateString] = [];
@@ -159,7 +152,7 @@ class Availability extends Component {
             items : this.getItems(items, this.state.date.getFullYear(),
                                   this.state.date.getMonth() + 1)
         });
-        //console.log("Get Items : " , this.state.items)
+        console.log("Get Items : " , this.state.items)
     }
 
     pressItem = (info) => {

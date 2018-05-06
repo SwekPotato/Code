@@ -1,0 +1,189 @@
+    1  react-native run-ios
+    2  react-native run-ios
+    3  react-native run-ios
+    4  react-native run-ios
+    5  react-native run-ios
+    6  react-native run-ios
+    7  react-native run-ios
+    8  npm install react-native-popup --save
+    9  npm uninstall react-native-popup --save
+   10  react-native run-ios
+   11  cd Downloads/
+   12  cd code/App/
+   13  grep appoint * -R
+   14  grep ageGroup -R *
+   15  grep this.props.navigation -R *
+   16  grep AddAvailability *
+   17  ls
+   18  cd pages/
+   19  ls
+   20  ls AddAvailability*
+   21  grep AddAvailability *
+   22  cd ..
+   23  grep AddAvailability * -R
+   24  pwd
+   25  cd ..
+   26  ls
+   27  cd ..
+   28  ls
+   29  pwd
+   30  cd ..
+   31  ls
+   32  cd AppDev/
+   33  ls
+   34  cd backend/
+   35  ls
+   36  grep ageGroup *
+   37  grep ageGroup * -R
+   38  pwd
+   39  cd ~/Downloads/code/App
+   40  grep Home -R *
+   41  grep scheduling -R *
+   42  grep Scheduling -R *
+   43  grep ErrorM * -R
+   44  ls
+   45  cd components/
+   46  grep Home *
+   47  cd ..
+   48  pwd
+   49  grep '"Settings"' -R *
+   50  grep 'Settings' -R *
+   51  grep Alert -R *
+   52  exit
+   53  /Users/jonathanpark/Downloads/code/node_modules/react-native/scripts/launchPackager.command ; exit;
+   54  react-native run-ios
+   55  react-native run-ios
+   56  react-native run-ios
+   57  react-native run-ios
+   58  react-native run-ios
+   59  react-native run-ios
+   60  exit
+   61  ./deploy
+   62  ./deploy
+   63  ./deploy
+   64  ./deploy
+   65  ./deploy
+   66  ./deploy
+   67  pm2
+   68  pm2 log
+   69  ./deploy
+   70  ./deploy
+   71  ./deploy
+   72  ./deploy
+   73  sudo yarn start
+   74  react-native run-ios
+   75  ssh backend
+   76  ./deploy
+   77  pm2 logs
+   78  ssh backen
+   79  ssh backend
+   80  ./deploy
+   81  ssh backend
+   82  exit
+   83  sudo yarn start
+   84  react-native run-ios
+   85  exit
+   86  sudo yarn start
+   87  exit
+   88  ssh backend
+   89  ./deploy 
+   90  ./deploy 
+   91  ssh backend
+   92  ./deploy
+   93  ./deploy
+   94  ./deploy
+   95  ssh backend
+   96  ./deploy
+   97  ./deploy
+   98  ./deploy
+   99  /Users/jonathanpark/Downloads/code/node_modules/react-native/scripts/launchPackager.command ; exit;
+  100  sudo yarn start
+  101  ssh backend
+  102  ./deploy
+  103  ./deploy
+  104  ./deploy
+  105  ssh backend
+  106  ./deplpy
+  107  ./deploy
+  108  ssh backend
+  109  cd Downloads/
+  110  ls
+  111  cd code
+  112  ks
+  113  ls
+  114  cd App
+  115  grep "more than 55" -R *
+  116  grep AddMeeting -R *
+  117  ./deploy
+  118  ./deploy
+  119  ./deploy
+  120  ./deploy
+  121  ./deploy
+  122  ./deploy
+  123  ./deploy
+  124  react-native run-ios
+  125  react-native run-ios
+  126  react-native run-ios
+  127  exit
+  128  react-native run-ios
+  129  sudo yarn start
+  130  sudo lsof -i tcp:8081
+  131  kill -9 64727
+  132  sudo kill -9 64727
+  133  sudo lsof -i tcp:8081
+  134  sudo kill -9 23896
+  135  sudo lsof -i tcp:8081
+  136  sudo lsof -i tcp:8081
+  137  sudo yarn start
+  138  exit
+  139  ssh backend
+  140  react-native run-ios
+  141  exit
+  142  sudo yarn start
+  143  exit
+  144  ssh backend
+  145  ssh backend
+  146  sudo yarn start
+  147  react-native run-ios
+  148  ssh backend
+  149  ./deploy
+  150  ./deploy
+  151  sudo yarn start
+  152  react-native run-ios
+  153  react-native run-ios
+  154  ./deploy
+  155  ssh backend
+  156  ./deploy
+  157  ./deploy
+  158  ssh backend
+  159  ./deplouy
+  160  ./deploy
+  161  ./deploy
+  162  ./deploy
+  163  ./deploy
+  164  ./deploy
+  165  ./deploy
+  166  ./deploy
+  167  react-native run-ios
+  168  exit
+  169  react-native run-ios
+  170  exit
+  171  sudo yarn start
+  172  react-native run-ios
+  173   sudo lsof -i tcp:8081
+  174  react-native run-ios
+  175  react-native run-ios
+  176  exit
+  177  react-native run-ios
+  178  exit
+  179  react-native run-ios
+  180  react-native run-ios
+  181  sudo yarn start
+  182  react-native run-ios
+  183  netstat -nlp | grep 808
+  184  netstat -nlp | grep 8081
+  185  netstat -p tcp | grep 8081
+  186  sudo yarn start
+  187  netstat -p tcp | grep 8081
+  188  ls
+  189  history >& a
