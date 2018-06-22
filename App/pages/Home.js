@@ -166,7 +166,15 @@ class Home extends Component {
 
     pressItem = (info) => {
         console.log(info);
-        this.setState({ call : true, chiseItem : info })
+        // TODO: Get the peer's skypeid.
+        url = 'skype:iamkjw?call'
+        Linking.canOpenURL(url).then(supported => {
+            if (!supported) {
+              console.log('Can\'t handle url: ' + url);
+            } else {
+              return Linking.openURL(url);
+            }
+          }).catch(err => console.error('An error occurred', err));
     }
 
     renderItem = (info) => {

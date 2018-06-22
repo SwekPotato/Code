@@ -76,9 +76,9 @@ const HomeTabScreen = TabNavigator({
 })
 
 const App = StackNavigator({
-  Loading : {
-    screen: LoadingPage
-  },    
+  //Loading : {
+  //  screen: LoadingPage
+  //},    
   Main : {
     screen: MainPage
   },
